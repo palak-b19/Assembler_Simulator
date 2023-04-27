@@ -1,0 +1,50 @@
+# op_code={'add':'00000','sub':'00001','mov':'00010','ld':'00100','st':'00101','mul':'00110','div':'00111','rs':'01000','ls':'01001','xor':'01010','or':'01011','and':'01100','not':'01101','cmp':'01110','jmp':'01111','jlt':'11100','jgt':'11101','je':'11111','hlt':'11010'}
+# reg={'R0':'000','R1':'001','R2':'010','R3':'011','R4':'100','R5':'101','R6':'110'}
+
+def imm_to_bin(n):
+    return "{0:07b}".format(int(n))
+
+print(imm_to_bin(12))
+
+# def type_A(opcode,r1,r2,r3):
+#     return opcode + '00' + r1 + r2 + r3
+
+# def type_B(opcode,r1,imm):
+#     return opcode + '0' + r1 + imm
+
+# def type_C(opcode,r1,r2):
+#     return opcode + '00000' + r1 + r2
+
+# def type_D(opcode,r1,m_add):
+#     return opcode + '0' + r1 + m_add
+
+# def type_E(opcode,m_add):
+#     return opcode + '0000' +m_add
+
+# def type_F(opcode):
+#     return opcode + '00000000000'
+# line='xxxxx'
+
+# def identify_type(lst):
+#     if len(lst)==4:
+#         print(type_A())
+#     elif len(lst)==2:
+#         #print(type_E())
+#     elif len(lst)==1:
+#         #print(type_F())
+#     else:
+#         if '$' in lst[-1]:
+#             #print(type_B())
+#         elif 'r' in lst[-1]:
+#             #print(type_C())
+#         elif lst[0] == 'ld' or lst[0] == 'st':
+#             #print(type_D())
+
+# f = open('input.txt', 'r')
+# page = f.read()
+# lines = page.split('\n')
+# print(lines)
+# for line in lines:
+#     words = line.split()
+#     identify_type(words)
+
