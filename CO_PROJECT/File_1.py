@@ -1,5 +1,33 @@
-op_code={'add':'00000','sub':'00001','mov':'00010','ld':'00100','st':'00101','mul':'00110','div':'00111','rs':'01000','ls':'01001','xor':'01010','or':'01011','and':'01100','not':'01101','cmp':'01110','jmp':'01111','jlt':'11100','jgt':'11101','je':'11111','hlt':'11010'}
-reg={'R0':'000','R1':'001','R2':'010','R3':'011','R4':'100','R5':'101','R6':'110'}
+op_code={'add':'00000',
+         'sub':'00001',
+         'mov':'00010',
+         'ld':'00100',
+         'st':'00101',
+         'mul':'00110',
+         'div':'00111',
+         'rs':'01000',
+         'ls':'01001',
+         'xor':'01010',
+         'or':'01011',
+         'and':'01100',
+         'not':'01101',
+         'cmp':'01110',
+         'jmp':'01111',
+         'jlt':'11100',
+         'jgt':'11101',
+         'je':'11111',
+         'hlt':'11010'}
+reg={'R0':'000',
+     'R1':'001',
+     'R2':'010',
+     'R3':'011',
+     'R4':'100',
+     'R5':'101',
+     'R6':'110'}
+
+def imm_to_bin(n):
+     return "{0:07b}".format(int(n))
+    
 
 def type_A(lst):
     opcode, r1, r2, r3 = lst[0], lst[1], lst[2], lst[3]
@@ -7,7 +35,7 @@ def type_A(lst):
 
 def type_B(lst):
     opcode, r1, imm = lst[0], lst[1], lst[2]
-    return op_code.get(opcode) + '0' +  reg.get(r1) + imm + '\n'
+    return op_code.get(opcode) + '0' +  reg.get(r1) + imm_to_bin(imm) + '\n'
 
 def type_C(lst):
     opcode, r1, r2= lst[0], lst[1], lst[2]
@@ -24,7 +52,6 @@ def type_E(lst):
 def type_F(lst):
     opcode= lst[0]
     return op_code.get(opcode) + '00000000000'
-line='xxxxx'
 
 def identify_type(lst):
     if len(lst)==4:
