@@ -193,6 +193,20 @@ def var_not_declared(lst):
                 if var_name not in declared:
                     print(f"ERROR: variable {var_name} is not declared")
 
+def not_defined_at_beginning(lst):
+    functions=[]
+    for line in list:
+        functions.append(line[0])
+        # print(functions)
+    for i in functions:
+        if i != 'v':
+            non_var = functions.index(i)
+            # print(non_var)
+            break
+    for i in range(non_var, len(functions)):
+        if functions[i] == 'v':
+            print("ERROR:Variables not declared at the beginning")
+
 global out
 out='\n'
 def identify_type(lst):
@@ -239,6 +253,7 @@ all_instructions=[x.lstrip().rstrip() for x in page.split('\n') if x!=""]
 print(all_instructions)
 hlt_checker()
 var_not_declared(all_instructions)
+not_defined_at_beginning(all_instructions)
 for line in all_instructions:
     if "$" in line:
         k=line.split()
