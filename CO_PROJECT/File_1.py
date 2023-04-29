@@ -198,12 +198,19 @@ def identify_type(lst):
             print(type_D(lst))
 
 def var_not_declared(lst):
-    if lst[0].startswith('var'):
-        pass
-    else:
-        global error_counter
-        error_counter+=1
-        print("ERROR:Variables not declared at the beginning")
+    declared={}
+    for i in lst:
+        if i.startswith('var'):
+            var_name=line.split()[1]
+            declared[var_name]="declared"
+    for i in lst:
+        word=i.split()
+        for w in word:
+            if 'var' in w:
+                var_name=word[-1]
+                if var_name not in declared:
+                    print(f"ERROR: variable {var_name} is not declared")
+           
 
 f = open('input.txt','r')
 page = f.read()
