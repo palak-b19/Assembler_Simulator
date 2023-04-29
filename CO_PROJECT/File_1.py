@@ -35,7 +35,16 @@ reg={'R0':'000',
 
 #global error_counter
 error_counter=0
-
+def valid_reg(r):
+    if r in reg.keys():
+        return True
+    return False
+def valid_instruction(i):
+    if i in op_code.keys():
+        return True
+    else:
+        print("ERROR: Typo in instruction name.")
+        return False
 def hlt_checker():
     if "hlt" not in all_instructions:
         global error_counter
@@ -65,20 +74,13 @@ def imm_to_bin(n):
     
 def type_A(lst):
     if len(lst)==4:
-        if lst[0] in op_type.get("A"):
-            if (lst[1] in reg.keys()) & (lst[2] in reg.keys()) & (lst[3] in reg.keys()):
-                opcode, r1, r2, r3 = lst[0], lst[1], lst[2], lst[3]
-                return op_code.get(opcode) + '00' + reg.get(r1) + reg.get(r2) + reg.get(r3)+'\n'
-            else:
-                global error_counter
-                error_counter += 1
-                print("ERROR: Typos in register name")
+        if (lst[1] in reg.keys()) & (lst[2] in reg.keys()) & (lst[3] in reg.keys()):
+            opcode, r1, r2, r3 = lst[0], lst[1], lst[2], lst[3]
+            return op_code.get(opcode) + '00' + reg.get(r1) + reg.get(r2) + reg.get(r3)+'\n'
         else:
+            global error_counter
             error_counter += 1
-            if lst[0] in op_code.keys():
-                print("ERROR: instruction not supported in type A instruction.")
-            else:
-                print("ERROR: Typos in instruction name")
+            print("ERROR: Typos in register name")
     else:
         error_counter+=1
         print("ERROR: Syntax error")
@@ -177,26 +179,6 @@ def type_F(lst):
     opcode= lst[0]
     return op_code.get(opcode) + '00000000000'
 
-def identify_type(lst):
-    if len(lst)==4:
-        print("a")
-        print(type_A(lst))
-    elif len(lst)==2:
-        print("e")
-        print(type_E(lst))
-    elif len(lst)==1:
-        print(type_F(lst))
-    else:
-        if '$' in lst[-1]:
-            print("b")
-            print(type_B(lst))
-        elif 'R' in lst[-1]:
-            print("c")
-            print(type_C(lst))
-        elif lst[0] == 'ld' or lst[0] == 'st':
-            print("d")
-            print(type_D(lst))
-
 def var_not_declared(lst):
     declared={}
     for i in lst:
@@ -210,27 +192,71 @@ def var_not_declared(lst):
                 var_name=word[-1]
                 if var_name not in declared:
                     print(f"ERROR: variable {var_name} is not declared")
-           
 
-f = open('input.txt','r')
+global out
+out='\n'
+def identify_type(lst):
+    if valid_instruction(lst[0]):
+        if lst[0] in ['mov']:
+            if lst[-1][0]=='$':
+                print("b")
+                global out
+                if type_B(lst) != None:
+                    out+=(type_B(lst))
+            else:
+                print("c")
+                if type_C(lst) != None:
+                    out+=(type_C(lst))
+        elif lst[0] in op_type.get("A"):
+            print("a")
+            if type_A(lst) != None:
+                out+=(type_A(lst))
+        elif lst[0] in op_type.get("B"):
+            print("b")
+            if type_B(lst) != None:
+                out+=(type_B(lst))
+        elif lst[0] in op_type.get("C"):
+            print("c")
+            if type_C(lst) != None:
+                out+=type_C(lst)
+        elif lst[0] in op_type.get("D"):
+            print("d")
+            if type_D(lst) != None:
+                out+=(type_D(lst))
+        elif lst[0] in op_type.get("E"):
+            print("e")
+            if type_E(lst) != None:
+                out+=(type_E(lst))
+        elif lst[0] in op_type.get("F"):
+            print("f")
+            if type_F(lst) != None:
+                out+=(type_F(lst))
+
+
+f = open('input.txt', 'r')
 page = f.read()
 all_instructions=[x for x in page.split('\n') if x!=""]
 print(all_instructions)
 hlt_checker()
-var_not_declared(all_instructions)
-
+var_not_declared()
 for line in all_instructions:
     if "$" in line:
         k=line.split()
-        print("k=",k)
         imm=k[-1]
-        check_imm(imm[1:])
-c=all_instructions[3]
-print(c)
-identify_type(c)
+        try:
+            imm=int(imm[1:])
+            check_imm(imm)
+        except:
+            print("ERROR: general syntax error")
+
+
 if error_counter==0:
     for line in all_instructions:
         words = line.split() 
-        identify_type(words) 
-   
+        identify_type(words)
+
 print(error_counter)
+if error_counter==0:
+    print(out)
+
+
