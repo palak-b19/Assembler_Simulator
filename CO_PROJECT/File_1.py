@@ -235,7 +235,7 @@ def identify_type(lst):
 
 f = open('input.txt', 'r')
 page = f.read()
-all_instructions=[x for x in page.split('\n') if x!=""]
+all_instructions=[x.lstrip().rstrip() for x in page.split('\n') if x!=""]
 print(all_instructions)
 hlt_checker()
 var_not_declared(all_instructions)
