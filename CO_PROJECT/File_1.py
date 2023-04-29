@@ -25,6 +25,8 @@ reg={'R0':'000',
      'R5':'101',
      'R6':'110'}
 
+error_counter=0
+
 def imm_to_bin(n):
      return "{0:07b}".format(int(n))
     
@@ -35,7 +37,7 @@ def type_A(lst):
 
 def type_B(lst):
     opcode, r1, imm = lst[0], lst[1], lst[2]
-    return op_code.get(opcode) + '0' +  reg.get(r1) + imm_to_bin(imm) + '\n'
+    return op_code.get(opcode) + '0' +  reg.get(r1) + imm_to_bin(imm[1:]) + '\n'
 
 def type_C(lst):
     opcode, r1, r2= lst[0], lst[1], lst[2]
@@ -72,6 +74,13 @@ f = open('input.txt', 'r')
 page = f.read()
 lines = page.split('\n')
 print(lines)
-for line in lines:
-    words = line.split()
-    identify_type(words)
+all_instructions=[x for x in lines if x!=""]
+print(all_instructions)
+if (all_instructions[-1]!="hlt"):
+    error_counter+=1
+    print("Hlt error")
+
+if error_counter==0:
+    for line in all_instructions:
+        words = line.split() 
+        identify_type(words)
