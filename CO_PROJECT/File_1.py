@@ -76,9 +76,18 @@ lines = page.split('\n')
 print(lines)
 all_instructions=[x for x in lines if x!=""]
 print(all_instructions)
-if (all_instructions[-1]!="hlt"):
+
+if "hlt" not in all_instructions:
     error_counter+=1
-    print("Hlt error")
+    print("Missing hlt instruction")
+print(error_counter)
+
+if "hlt" in all_instructions:
+    if (all_instructions[-1]!="hlt"):
+        error_counter+=1
+        print("Error as hlt is not being used as the last instruction")
+    print(error_counter)
+
 
 if error_counter==0:
     for line in all_instructions:
