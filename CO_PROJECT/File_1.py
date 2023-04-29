@@ -183,7 +183,7 @@ def var_not_declared(lst):
     declared={}
     for i in lst:
         if i.startswith('var'):
-            var_name=line.split()[1]
+            var_name=i.split()[1]
             declared[var_name]="declared"
     for i in lst:
         word=i.split()
