@@ -238,16 +238,20 @@ page = f.read()
 all_instructions=[x for x in page.split('\n') if x!=""]
 print(all_instructions)
 hlt_checker()
-var_not_declared()
+var_not_declared(all_instructions)
 for line in all_instructions:
     if "$" in line:
         k=line.split()
         imm=k[-1]
-        try:
+        # try:
+        # imm=int(imm[1:])
+        if imm[1:].isdigit():
             imm=int(imm[1:])
             check_imm(imm)
-        except:
-            print("ERROR: general syntax error")
+        else:
+            print("Immediate is not a numeric value")
+        # except:
+        #     print("ERROR: general syntax error")
 
 
 if error_counter==0:
@@ -258,5 +262,3 @@ if error_counter==0:
 print(error_counter)
 if error_counter==0:
     print(out)
-
-
