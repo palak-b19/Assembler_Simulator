@@ -25,10 +25,22 @@ reg={'R0':'000',
      'R5':'101',
      'R6':'110'}
 
+global error_counter
 error_counter=0
 
+def check_imm(n):
+    if 0<=int(n)<=127:
+        return True
+    else:
+        print("Illegal immediate value")
+        global error_counter
+        error_counter+=1
+        return False
+
+
 def imm_to_bin(n):
-     return "{0:07b}".format(int(n))
+    if check_imm(n):
+        return "{0:07b}".format(int(n))
     
 
 def type_A(lst):
@@ -73,23 +85,27 @@ def identify_type(lst):
 f = open('input.txt', 'r')
 page = f.read()
 lines = page.split('\n')
-print(lines)
+# print(lines)
 all_instructions=[x for x in lines if x!=""]
 print(all_instructions)
 
 if "hlt" not in all_instructions:
     error_counter+=1
     print("Missing hlt instruction")
-print(error_counter)
+# print(error_counter)
 
 if "hlt" in all_instructions:
     if (all_instructions[-1]!="hlt"):
         error_counter+=1
         print("Error as hlt is not being used as the last instruction")
-    print(error_counter)
-
+    # print(error_counter)
+for line in all_instructions:
+        if "$" in line:
+            k=line.split()
+            imm=k[-1]
+            check_imm(imm[1:])
 
 if error_counter==0:
     for line in all_instructions:
         words = line.split() 
-        identify_type(words)
+        identify_type(words) 
