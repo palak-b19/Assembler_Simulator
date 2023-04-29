@@ -197,11 +197,20 @@ def identify_type(lst):
             print("d")
             print(type_D(lst))
 
-f = open('input.txt', 'r')
+def var_not_declared(lst):
+    if lst[0].startswith('var'):
+        pass
+    else:
+        global error_counter
+        error_counter+=1
+        print("ERROR:Variables not declared at the beginning")
+
+f = open('input.txt','r')
 page = f.read()
 all_instructions=[x for x in page.split('\n') if x!=""]
 print(all_instructions)
 hlt_checker()
+var_not_declared(all_instructions)
 
 for line in all_instructions:
     if "$" in line:
