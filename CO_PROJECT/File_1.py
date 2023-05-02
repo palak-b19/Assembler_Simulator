@@ -1,3 +1,5 @@
+#assumptions:
+#variable name cannot be opcode instructions
 op_code={'add':'00000',
          'sub':'00001',
          'mov':'00010',
@@ -71,7 +73,16 @@ def check_imm(n):
 
 def imm_to_bin(n):
     return "{0:07b}".format(int(n))
-    
+
+def typos(list):
+    flag=1
+    for ins in list:
+        if ins[0] not in op_code.keys():
+            print("ERROR: Typos in instruction name")
+            flag=0
+        
+        
+    return flag
 def type_A(lst):
     if len(lst)==4:
         if (lst[1] in reg.keys()) & (lst[2] in reg.keys()) & (lst[3] in reg.keys()):
@@ -193,20 +204,45 @@ def var_not_declared(lst):
                 if var_name not in declared:
                     print(f"ERROR: variable {var_name} is not declared")
 
-def not_defined_at_beginning(lst):
+def not_defined_at_beginning(list): 
+    flag=1
+    for line in list:
+        if line[0]=="var" and len(line)==2 :
+            if line[-1] in op_code.keys():
+                print("Opcode cannot be used as instruction name")
+                flag=0
+        else:
+            print("General Syntax error")
     functions=[]
     for line in list:
+        line=line.split()
         functions.append(line[0])
         # print(functions)
     for i in functions:
-        if i != 'v':
-            non_var = functions.index(i)
-            # print(non_var)
+        # print(i)
+        if i != 'var':
+            non_var_index = functions.index(i)
+            print(non_var_index)
             break
-    for i in range(non_var, len(functions)):
-        if functions[i] == 'v':
+    for i in range(non_var_index, len(functions)):
+        if functions[i] == 'var':
             print("ERROR:Variables not declared at the beginning")
-
+            flag=0
+    return flag
+def immediate():
+    flag=1
+    for line in all_instructions:
+        if "$" in line:
+            k=line.split()
+            imm=k[-1]
+            if imm[1:].isdigit():
+                imm=int(imm[1:])
+                if not check_imm(imm):
+                    flag=0
+            else:
+                print("Immediate is not a numeric value or general syntax error")
+                flag=0
+    return flag
 global out
 out='\n'
 def identify_type(lst):
@@ -246,27 +282,44 @@ def identify_type(lst):
             if type_F(lst) != None:
                 out+=(type_F(lst))
 
+var=[]
+inst=[]
+labels={}
+pc=0
 
 f = open('input.txt', 'r')
 page = f.read()
 all_instructions=[x.lstrip().rstrip() for x in page.split('\n') if x!=""]
 print(all_instructions)
-hlt_checker()
-var_not_declared(all_instructions)
-not_defined_at_beginning(all_instructions)
+
 for line in all_instructions:
-    if "$" in line:
-        k=line.split()
-        imm=k[-1]
-        # try:
-        # imm=int(imm[1:])
-        if imm[1:].isdigit():
-            imm=int(imm[1:])
-            check_imm(imm)
-        else:
-            print("Immediate is not a numeric value")
-        # except:
-        #     print("ERROR: general syntax error")
+    if line[0]=="var":
+        var.append(line[1])
+    elif line[0][-1]==":":
+        labels[line[0]]={pc,"mem_addr"} 
+        inst.append(line[1:]) #adding the instruction only not the name in the inst list
+        pc+=1
+    else:
+        inst.append(line)
+        pc+=1
+
+def check_all_errors():
+    flag=1
+    if var_not_declared(all_instructions)!=1:
+        flag=0
+    if not_defined_at_beginning(all_instructions)!=1:
+        flag=0
+    if hlt_checker()!=1:
+        flag=0
+    if immediate()!=1:
+        flag=0
+    if typos(inst)!=1:
+        flag=0
+
+
+    if flag==1:
+        #runall
+     
 
 
 if error_counter==0:
