@@ -41,12 +41,8 @@ def valid_reg(r):
     if r in reg.keys():
         return True
     return False
-def valid_instruction(i):
-    if i in op_code.keys():
-        return True
-    else:
-        print("ERROR: Typo in instruction name.")
-        return False
+
+    
 def hlt_checker():
     if "hlt" not in all_instructions:
         global error_counter
@@ -83,108 +79,84 @@ def typos(list):
         
         
     return flag
-def type_A(lst):
+
+def error_type_A(lst):
+    flag=1
     if len(lst)==4:
-        if (lst[1] in reg.keys()) & (lst[2] in reg.keys()) & (lst[3] in reg.keys()):
-            opcode, r1, r2, r3 = lst[0], lst[1], lst[2], lst[3]
-            return op_code.get(opcode) + '00' + reg.get(r1) + reg.get(r2) + reg.get(r3)+'\n'
-        else:
-            global error_counter
-            error_counter += 1
+        if not (lst[1] in reg.keys()) & (lst[2] in reg.keys()) & (lst[3] in reg.keys()):
             print("ERROR: Typos in register name")
-    else:
-        error_counter+=1
+            flag=0
+     else:
         print("ERROR: Syntax error")
+        flag=0
 
-def type_B(lst):
+def error_type_B(lst):
+    flag=1
     if len(lst)==3:
-        if lst[0] in op_type.get('B'):
-            if (lst[1] in reg.keys()):
-                opcode, r1, imm = lst[0], lst[1], lst[2]
-                return op_code.get(opcode) + '0' +  reg.get(r1) + imm_to_bin(imm[1:]) + '\n'
-            else:
-                global error_counter
-                error_counter += 1
+         if not (lst[1] in reg.keys()):
                 print("ERROR: Typos in register name")
-        else:
-            error_counter += 1
-            if lst[0] in op_code.keys():
-                print("ERROR: instruction not supported in type B instruction.")
-            else:
-                print("ERROR: Typos in instruction name")
-    else:
-        error_counter+=1
+                flag=0
+     else:
         print("ERROR: Syntax error")
-
-def type_C(lst):
+        flag=0
+         
+def error_type_C(lst):
+    flag=1
     if len(lst)==3:
-        if lst[0] in op_type.get('C'):
-            if (lst[1] in reg.keys()) & (lst[2] in reg.keys()):
-                opcode, r1, r2 = lst[0], lst[1], lst[2]
-                return op_code.get(opcode) + '00000' + reg.get(r1) + reg.get(r2) + '\n'
-            else:
-                global error_counter
-                error_counter += 1
-                print("ERROR: Typos in register name")
-        else:
-            error_counter += 1
-            if lst[0] in op_code.keys():
-                print("ERROR: instruction not supported in type C instruction.")
-            else:
-                print("ERROR: Typos in instruction name")
+        if not (lst[1] in reg.keys()) & (lst[2] in reg.keys()):
+             print("ERROR: Typos in register name")
+             flag=0
     else:
-        error_counter+=1
         print("ERROR: Syntax error")
-
-def type_D(lst):
+        flag=0
+         
+ def error_type_D(lst,varl): #call with var list. #ud var, label as var can be extended here.
+    flag=1
     if len(lst)==3:
-        if lst[0] in op_type.get("D"):
             if lst[1] in reg.keys():
                 # modify to handle m_add error
-                if (1):  #replace with condition if m_add is correct
-                    opcode, r1, m_add = lst[0], lst[1], lst[2]
-                    return op_code.get(opcode) + '0' + reg.get(
-                        r1) + m_add  # correct to get memory add and handle error here
-                else:
-                    global error_counter
-                    error_counter += 1
-                    print("ERROR: in m_add")
+                if not(lst[2] in varl):  #replace with condition if m_add is correct
+                 flag=0
+                 print("ERROR: in m_add")
             else:
-                error_counter += 1
+                flag=0
                 print("ERROR: Typos in register name")
-
-        else:
-            error_counter += 1
-            if lst[0] in op_code.keys():
-                print("ERROR: instruction not supported in type E instruction.")
-            else:
-                print("ERROR: Typos in instruction name")
-
     else:
-        error_counter+=1
         print("ERROR: Syntax error")
+        flag=0
+         
+def error_type_E(lst): #call with var list. #ud var, label as var can be extended here.
+    flag=0
+    if len(lst)==2:
+       if not(lst[1] in varl):  #replace with condition if m_add is correct
+        flag=0
+        print("ERROR: in m_add")
+     else:
+        print("ERROR: Syntax error")
+        flag=0
+
+def type_A(lst):
+   opcode, r1, r2, r3 = lst[0], lst[1], lst[2], lst[3]
+   return op_code.get(opcode) + '00' + reg.get(r1) + reg.get(r2) + reg.get(r3)+'\n'
+
+def type_B(lst):
+   opcode, r1, imm = lst[0], lst[1], lst[2]
+   return op_code.get(opcode) + '0' +  reg.get(r1) + imm_to_bin(imm[1:]) + '\n'
+
+
+def type_C(lst):
+    opcode, r1, r2 = lst[0], lst[1], lst[2]
+    return op_code.get(opcode) + '00000' + reg.get(r1) + reg.get(r2) + '\n'
+
+
+def type_D(lst): #madd
+  opcode, r1, m_add = lst[0], lst[1], lst[2]
+  return op_code.get(opcode) + '0' + reg.get(r1) + m_add  # correct to get memory add and handle error here
+
 
 def type_E(lst):
-    if len(lst)==2:
-        if lst[0] in op_type.get("E"):
-            # modify to handle m_add error
-            if (1):  #replace with condition if m_add is correct
-                opcode, m_add = lst[0], lst[1]
-                return op_code.get(opcode) + '0000' + m_add
-            else:
-                global error_counter
-                error_counter += 1
-                print("ERROR: in m_add")
-        else:
-            error_counter += 1
-            if lst[0] in op_code.keys():
-                print("ERROR: instruction not supported in type E instruction.")
-            else:
-                print("ERROR: Typos in instruction name")
-
-    else:
-        error_counter+=1
-        print("ERROR: Syntax error")
+   opcode, m_add = lst[0], lst[1]
+   return op_code.get(opcode) + '0000' + m_add
 
 def type_F(lst):
     opcode= lst[0]
@@ -246,41 +218,36 @@ def immediate():
 global out
 out='\n'
 def identify_type(lst):
-    if valid_instruction(lst[0]):
-        if lst[0] in ['mov']:
-            if lst[-1][0]=='$':
-                print("b")
-                global out
-                if type_B(lst) != None:
-                    out+=(type_B(lst))
-            else:
-                print("c")
-                if type_C(lst) != None:
-                    out+=(type_C(lst))
-        elif lst[0] in op_type.get("A"):
-            print("a")
-            if type_A(lst) != None:
-                out+=(type_A(lst))
-        elif lst[0] in op_type.get("B"):
+    flag=1
+    if lst[0] in ['mov']:
+        if lst[-1][0]=='$':
             print("b")
-            if type_B(lst) != None:
-                out+=(type_B(lst))
-        elif lst[0] in op_type.get("C"):
+            flag=error_type_B(lst)
+        else:
             print("c")
-            if type_C(lst) != None:
-                out+=type_C(lst)
-        elif lst[0] in op_type.get("D"):
-            print("d")
-            if type_D(lst) != None:
-                out+=(type_D(lst))
-        elif lst[0] in op_type.get("E"):
-            print("e")
-            if type_E(lst) != None:
-                out+=(type_E(lst))
-        elif lst[0] in op_type.get("F"):
-            print("f")
-            if type_F(lst) != None:
-                out+=(type_F(lst))
+            flag=type_C(lst)
+    elif lst[0] in op_type.get("A"):
+        print("a")
+        flag=error_type_A(lst)
+    elif lst[0] in op_type.get("B"):
+        print("b")
+        flag=error_type_B(lst)
+    elif lst[0] in op_type.get("C"):
+        print("c")
+        flag=error_type_C(lst)
+    elif lst[0] in op_type.get("D"):
+        print("d")
+        flag=error_type_D(lst)
+    elif lst[0] in op_type.get("E"):
+        print("e")
+        flag=error_type_E(lst)
+    elif lst[0] in op_type.get("F"):
+        print("f")
+        flag=error_type_F(lst)
+    else:
+        print("ERROR: Typo in instruction name.")
+        flag=0
+    return flag
 
 var=[]
 inst=[]
