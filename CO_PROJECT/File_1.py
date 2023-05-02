@@ -115,30 +115,44 @@ def error_type_C(lst):
         print("ERROR: Syntax error")
         flag=0
          
- def error_type_D(lst,varl): #call with var list. #ud var, label as var can be extended here.
+ def error_type_D(lst,labl): #call with var list. #ud var, label as var can be extended here.
     flag=1
     if len(lst)==3:
             if lst[1] in reg.keys():
                 # modify to handle m_add error
-                if not(lst[2] in varl):  #replace with condition if m_add is correct
+                if lst[-1]+":" in varl:
+                  flag=0
+                  print("ERROR: Use of label as variable")
+                else if not(lst[2] in varl):  #replace with condition if m_add is correct
                  flag=0
                  print("ERROR: in m_add")
+   
             else:
                 flag=0
                 print("ERROR: Typos in register name")
+                if lst[-1]+":" in labl:
+                  print("ERROR: Use of label as variable")
     else:
         print("ERROR: Syntax error")
         flag=0
+    return flag
          
 def error_type_E(lst): #call with var list. #ud var, label as var can be extended here.
     flag=0
     if len(lst)==2:
-       if not(lst[1] in varl):  #replace with condition if m_add is correct
+       if lst[-1]+":" in varl:
+         flag=0
+         print("ERROR: Use of label as variable")
+                 
+       else if not(lst[1] in varl):  #replace with condition if m_add is correct
         flag=0
         print("ERROR: in m_add")
-     else:
-        print("ERROR: Syntax error")
+    else:
         flag=0
+        print("ERROR: Syntax error")
+        if lst[-1]+":" in labl:
+            print("ERROR: Use of label as variable")
+    return flag
 
 def type_A(lst):
    opcode, r1, r2, r3 = lst[0], lst[1], lst[2], lst[3]
