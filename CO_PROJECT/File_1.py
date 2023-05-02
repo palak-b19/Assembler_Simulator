@@ -72,12 +72,9 @@ def imm_to_bin(n):
 
 def typos(list):
     flag=1
-    for ins in list:
-        if ins[0] not in op_code.keys():
-            print("ERROR: Typos in instruction name")
-            flag=0
-        
-        
+      for line in list:
+         words = line.split() 
+         flag |=identify_error_type(words)
     return flag
 
 def error_type_A(lst):
@@ -217,7 +214,7 @@ def immediate():
     return flag
 global out
 out='\n'
-def identify_type(lst):
+def identify_error_type(lst):
     flag=1
     if lst[0] in ['mov']:
         if lst[-1][0]=='$':
@@ -287,12 +284,6 @@ def check_all_errors():
     if flag==1:
         #runall
      
-
-
-if error_counter==0:
-    for line in all_instructions:
-        words = line.split() 
-        identify_type(words)
 
 print(error_counter)
 if error_counter==0:
