@@ -42,21 +42,29 @@ def valid_reg(r):
         return True
     return False
 
-    
-def hlt_checker():
-    if "hlt" not in all_instructions:
-        global error_counter
-        error_counter += 1
+def hlt_checker(list):
+    flag=1
+    tmp_flag=0
+    tmp_words=[] #can set global nested list of inst
+    for line in list:
+         words = line.split() 
+         tmp_words.append(words)
+    for word in tmp_words:
+        if "hlt" in word:
+            tmp_flag|=1
+    if not(tmp_flag):
+        flag=0
         print("Missing hlt instruction")
+        
     else:
-        if (all_instructions[-1] != "hlt"):
-            error_counter += 1
+        if (tmp_words[-1][-1] != "hlt"):
+            flag=0 
             print("Error as hlt is not being used as the last instruction")
-        for instruction in all_instructions[0:-2]:
-            if instruction == "hlt":
-                error_counter += 1
+        for instruction in tmp_words[0:-1]:
+            if instruction[-1] == "hlt":
+                flag=0 
                 print("ERROR: General syntax error.") # hlt occurs before last instruction
-                return False
+    return flag
 
 def check_imm(n):
     if 0<=int(n)<=127:
@@ -273,7 +281,7 @@ def check_all_errors():
         flag=0
     if not_defined_at_beginning(all_instructions)!=1:
         flag=0
-    if hlt_checker()!=1:
+    if hlt_checker(all_instructions)!=1:
         flag=0
     if immediate()!=1:
         flag=0
