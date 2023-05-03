@@ -35,20 +35,10 @@ reg={'R0':'000',
      'R5':'101',
      'R6':'110'}
 
-#global error_counter
-error_counter=0
-def valid_reg(r):
-    if r in reg.keys():
-        return True
-    return False
 
-def hlt_checker(list):
+def hlt_checker(list,tmp_words):
     flag=1
     tmp_flag=0
-    tmp_words=[] #can set global nested list of inst
-    for line in list:
-         words = line.split() 
-         tmp_words.append(words)
     for word in tmp_words:
         if "hlt" in word:
             tmp_flag|=1
@@ -63,7 +53,7 @@ def hlt_checker(list):
         for instruction in tmp_words[0:-1]:
             if instruction[-1] == "hlt":
                 flag=0 
-                print("ERROR: General syntax error.") # hlt occurs before last instruction
+                print("ERROR_in_hlt: General syntax error.") # hlt occurs before last instruction
     return flag
 
 def check_imm(n):
@@ -79,109 +69,14 @@ def imm_to_bin(n):
     return "{0:07b}".format(int(n))
 
 def typos(list):
+    print("typos argument: ",list)
     flag=1
-      for line in list:
-         words = line.split() 
-         flag |=identify_error_type(words)
+    for words in list:
+       flag |=identify_error_type(words)
     return flag
-
-def error_type_A(lst):
-    flag=1
-    if len(lst)==4:
-        if not (lst[1] in reg.keys()) & (lst[2] in reg.keys()) & (lst[3] in reg.keys()):
-            print("ERROR: Typos in register name")
-            flag=0
-     else:
-        print("ERROR: Syntax error")
-        flag=0
-
-def error_type_B(lst):
-    flag=1
-    if len(lst)==3:
-         if not (lst[1] in reg.keys()):
-                print("ERROR: Typos in register name")
-                flag=0
-     else:
-        print("ERROR: Syntax error")
-        flag=0
-         
-def error_type_C(lst):
-    flag=1
-    if len(lst)==3:
-        if not (lst[1] in reg.keys()) & (lst[2] in reg.keys()):
-             print("ERROR: Typos in register name")
-             flag=0
-    else:
-        print("ERROR: Syntax error")
-        flag=0
-         
- def error_type_D(lst,labl): #call with var list. #ud var, label as var can be extended here.
-    flag=1
-    if len(lst)==3:
-            if lst[1] in reg.keys():
-                # modify to handle m_add error
-                if lst[-1]+":" in varl:
-                  flag=0
-                  print("ERROR: Use of label as variable")
-                else if not(lst[2] in varl):  #replace with condition if m_add is correct
-                 flag=0
-                 print("ERROR: in m_add")
-   
-            else:
-                flag=0
-                print("ERROR: Typos in register name")
-                if lst[-1]+":" in labl:
-                  print("ERROR: Use of label as variable")
-    else:
-        print("ERROR: Syntax error")
-        flag=0
-    return flag
-         
-def error_type_E(lst): #call with var list. #ud var, label as var can be extended here.
-    flag=0
-    if len(lst)==2:
-       if lst[-1]+":" in varl:
-         flag=0
-         print("ERROR: Use of label as variable")
-                 
-       else if not(lst[1] in varl):  #replace with condition if m_add is correct
-        flag=0
-        print("ERROR: in m_add")
-    else:
-        flag=0
-        print("ERROR: Syntax error")
-        if lst[-1]+":" in labl:
-            print("ERROR: Use of label as variable")
-    return flag
-
-def type_A(lst):
-   opcode, r1, r2, r3 = lst[0], lst[1], lst[2], lst[3]
-   return op_code.get(opcode) + '00' + reg.get(r1) + reg.get(r2) + reg.get(r3)+'\n'
-
-def type_B(lst):
-   opcode, r1, imm = lst[0], lst[1], lst[2]
-   return op_code.get(opcode) + '0' +  reg.get(r1) + imm_to_bin(imm[1:]) + '\n'
-
-
-def type_C(lst):
-    opcode, r1, r2 = lst[0], lst[1], lst[2]
-    return op_code.get(opcode) + '00000' + reg.get(r1) + reg.get(r2) + '\n'
-
-
-def type_D(lst): #madd
-  opcode, r1, m_add = lst[0], lst[1], lst[2]
-  return op_code.get(opcode) + '0' + reg.get(r1) + m_add  # correct to get memory add and handle error here
-
-
-def type_E(lst):
-   opcode, m_add = lst[0], lst[1]
-   return op_code.get(opcode) + '0000' + m_add
-
-def type_F(lst):
-    opcode= lst[0]
-    return op_code.get(opcode) + '00000000000'
 
 def var_not_declared(lst):
+    flag=1
     declared={}
     for i in lst:
         if i.startswith('var'):
@@ -194,21 +89,24 @@ def var_not_declared(lst):
                 var_name=word[-1]
                 if var_name not in declared:
                     print(f"ERROR: variable {var_name} is not declared")
+                    flag=0
+    return flag
 
-def not_defined_at_beginning(list): 
+def not_defined_at_beginning(list1,list2): 
+    print(list)
     flag=1
-    for line in list:
+    for line in list1:
         if line[0]=="var" and len(line)==2 :
             if line[-1] in op_code.keys():
                 print("Opcode cannot be used as instruction name")
                 flag=0
-        else:
-            print("General Syntax error")
+        #else:
+        #    print("ERROR_in_ndab: General Syntax error")
     functions=[]
-    for line in list:
+    for line in list2:
         line=line.split()
         functions.append(line[0])
-        # print(functions)
+    #print(functions)
     for i in functions:
         # print(i)
         if i != 'var':
@@ -220,6 +118,7 @@ def not_defined_at_beginning(list):
             print("ERROR:Variables not declared at the beginning")
             flag=0
     return flag
+  
 def immediate():
     flag=1
     for line in all_instructions:
@@ -234,79 +133,195 @@ def immediate():
                 print("Immediate is not a numeric value or general syntax error")
                 flag=0
     return flag
-global out
-out='\n'
-def identify_error_type(lst):
+
+
+def error_type_A(lst):
     flag=1
-    if lst[0] in ['mov']:
-        if lst[-1][0]=='$':
-            print("b")
-            flag=error_type_B(lst)
-        else:
-            print("c")
-            flag=type_C(lst)
-    elif lst[0] in op_type.get("A"):
-        print("a")
-        flag=error_type_A(lst)
-    elif lst[0] in op_type.get("B"):
-        print("b")
-        flag=error_type_B(lst)
-    elif lst[0] in op_type.get("C"):
-        print("c")
-        flag=error_type_C(lst)
-    elif lst[0] in op_type.get("D"):
-        print("d")
-        flag=error_type_D(lst)
-    elif lst[0] in op_type.get("E"):
-        print("e")
-        flag=error_type_E(lst)
-    elif lst[0] in op_type.get("F"):
-        print("f")
-        flag=error_type_F(lst)
+    if len(lst)==4:
+        if not (lst[1] in reg.keys()) & (lst[2] in reg.keys()) &(lst[3] in reg.keys()):
+            print("ERROR: Typos in register name")
+            flag=0
     else:
-        print("ERROR: Typo in instruction name.")
+        print("ERROR: Syntax error")
         flag=0
     return flag
 
-var=[]
-inst=[]
-labels={}
-pc=0
+def error_type_B(lst):
+    flag=1
+    if len(lst)==3:
+         if not (lst[1] in reg.keys()):
+                print("ERROR: Typos in register name")
+                flag=0
+    else:
+        print("ERROR: Syntax error")
+        flag=0
+    return flag
+         
+def error_type_C(lst):
+    flag=1
+    if len(lst)==3:
+        if not (lst[1] in reg.keys()) & (lst[2] in reg.keys()):
+             print("ERROR: Typos in register name")
+             flag=0
+    else:
+        print("ERROR: Syntax error")
+        flag=0
+    return flag
+         
+def error_type_D(lst,labl,varl): #call with var list. #ud var, label as var can be extended here.
+    flag=1
+    if len(lst)==3:
+        if lst[1] in reg.keys():
+            # modify to handle m_add error
+            if lst[-1] in labl:
+              flag=0
+              print("ERROR: Use of label as variable")
+            elif (not(lst[2] in varl)):  #replace with condition if m_add is correct
+              flag=0
+              print("ERROR: in m_add")
 
+        else:
+            flag=0
+            print("ERROR: Typos in register name")
+            if lst[-1]+":" in labl:
+              print("ERROR: Use of label as variable")
+    else:
+        print("ERROR: Syntax error")
+        flag=0
+    return flag
+         
+def error_type_E(lst,varl): #call with var list. #ud var, label as var can be extended here.
+    flag=0
+    if len(lst)==2:
+       if lst[-1]+":" in varl:
+         flag=0
+         print("ERROR: Use of label as variable")
+                 
+       elif not(lst[1] in varl):  #replace with condition if m_add is correct
+        flag=0
+        print("ERROR: in m_add")
+    else:
+        flag=0
+        print("ERROR: Syntax error")
+        if lst[-1]+":" in labl:
+            print("ERROR: Use of label as variable")
+    return flag
+
+
+
+def type_A(lst):
+   opcode, r1, r2, r3 = lst[0], lst[1], lst[2], lst[3]
+   return op_code.get(opcode) + '00' + reg.get(r1) + reg.get(r2) + reg.get(r3)+'\n'
+
+def type_B(lst):
+   opcode, r1, imm = lst[0], lst[1], lst[2]
+   return op_code.get(opcode) + '0' +  reg.get(r1) + imm_to_bin(imm[1:]) + '\n'
+
+def type_C(lst):
+    opcode, r1, r2 = lst[0], lst[1], lst[2]
+    return op_code.get(opcode) + '00000' + reg.get(r1) + reg.get(r2) + '\n'
+
+def type_D(lst): #madd
+  opcode, r1, m_add = lst[0], lst[1], lst[2]
+  return op_code.get(opcode) + '0' + reg.get(r1) + m_add  # correct to get memory add and handle error here
+
+def type_E(lst):
+   opcode, m_add = lst[0], lst[1]
+   return op_code.get(opcode) + '0000' + m_add
+
+def type_F(lst):
+    opcode= lst[0]
+    return op_code.get(opcode) + '00000000000'
+
+  
+def identify_error_type(lst):
+  flag=1
+  if lst[0] in ['mov']:
+      if lst[-1][0]=='$':
+          print("b")
+          flag=error_type_B(lst)
+      else:
+          print("c")
+          flag=type_C(lst)
+  elif lst[0] in op_type.get("A"):
+      print("a")
+      flag=error_type_A(lst)
+  elif lst[0] in op_type.get("B"):
+      print("b")
+      flag=error_type_B(lst)
+  elif lst[0] in op_type.get("C"):
+      print("c")
+      flag=error_type_C(lst)
+  elif lst[0] in op_type.get("D"):
+      print("d")
+      flag=error_type_D(lst,labels_list,var)
+  elif lst[0] in op_type.get("E"):
+      print("e")
+      flag=error_type_E(lst)
+  elif lst[0] in op_type.get("F"):
+      print("f")
+      #flag= error_type_F(lst)
+  else:
+      print("ERROR: Typo in instruction name.")
+      flag=0
+  return flag
+
+
+pc=0
+#reading input file.
 f = open('input.txt', 'r')
 page = f.read()
 all_instructions=[x.lstrip().rstrip() for x in page.split('\n') if x!=""]
-print(all_instructions)
+print("all_instructions: ",all_instructions,"\n",sep="")
 
+
+tmp_words=[] #nested list to store all instructions
 for line in all_instructions:
+   words = line.split() 
+   tmp_words.append(words)
+print("tmp_words: ",tmp_words,"\n",sep="")
+
+
+var,inst,labels_list,labels =[],[],[],{}
+#classification of labels, var dec & instructions.
+for line in tmp_words:
     if line[0]=="var":
         var.append(line[1])
     elif line[0][-1]==":":
-        labels[line[0]]={pc,"mem_addr"} 
+        labels[ line[0] ]={pc,"mem_addr"} 
+        labels_list.append(line[0][0:-1])
         inst.append(line[1:]) #adding the instruction only not the name in the inst list
         pc+=1
     else:
         inst.append(line)
         pc+=1
+print("var: ",var,"\n","inst: ",inst,"\n","labels_list:",labels_list,"\n",sep="")
 
+#checking all errors
 def check_all_errors():
     flag=1
     if var_not_declared(all_instructions)!=1:
         flag=0
-    if not_defined_at_beginning(all_instructions)!=1:
+        print(flag,"1")
+    if not_defined_at_beginning(tmp_words,all_instructions)!=1:
         flag=0
-    if hlt_checker(all_instructions)!=1:
+        print(flag,"2")
+    if hlt_checker(all_instructions,tmp_words)!=1:
         flag=0
+        print(flag,"3")
     if immediate()!=1:
         flag=0
+        print(flag,"4")
     if typos(inst)!=1:
         flag=0
-
-
+        print(flag,"5")
     if flag==1:
-        #runall
-     
+      #runall
+      print("runall")
+    if flag==0:
+      print("error occured")
+    return flag
 
-print(error_counter)
-if error_counter==0:
-    print(out)
+#generating and printing machine code
+if check_all_errors():
+  print("printing binary")
