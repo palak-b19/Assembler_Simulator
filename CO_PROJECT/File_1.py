@@ -194,7 +194,7 @@ def error_type_D(lst, labl, varl):  # call with var list. #ud var, label as var 
                 print("ERROR: Use of label as variable")
             elif (not (lst[2] in varl)):  # replace with condition if m_add is correct
                 flag = 0
-                print("ERROR: in m_add only variables can be used as m_add")
+                print("ERROR: only variables can be used as m_add")
 
         else:
             flag = 0
@@ -206,21 +206,21 @@ def error_type_D(lst, labl, varl):  # call with var list. #ud var, label as var 
         flag = 0
     return flag
 
-# use of label as var
+# use of label as var need label
 def error_type_E(lst, varl):  # call with var list. #ud var, label as var can be extended here.
     flag = 0
     if len(lst) == 2:
-        if lst[-1] + ":" in varl:
+        if lst[-1] in varl:
             flag = 0
-            print("ERROR: Use of label as variable")
+            print("ERROR: Use of variable as label")
 
-        elif not (lst[1] in varl):  # replace with condition if m_add is correct
+        elif (lst[1] not in labels_list):  # replace with condition if m_add is correct
             flag = 0
             print("ERROR: in m_add")
     else:
         flag = 0
         print("ERROR: Syntax error")
-        if lst[-1] + ":" in  labels_list:
+        if lst[-1] in varl:
             print("ERROR: Use of label as variable")
     return flag
 
