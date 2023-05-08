@@ -33,8 +33,7 @@ reg = {'R0': '000',
        'R3': '011',
        'R4': '100',
        'R5': '101',
-       'R6': '110',
-      'FLAGS':'111'}
+       'R6': '110'}
 
 
 def hlt_checker(list, tmp_words):
@@ -219,35 +218,6 @@ def error_type_E(lst, varl):  # call with var list. #ud var, label as var can be
     return flag
 
 
-def type_A(lst):
-    opcode, r1, r2, r3 = lst[0], lst[1], lst[2], lst[3]
-    return op_code.get(opcode) + '00' + reg.get(r1) + reg.get(r2) + reg.get(r3) + '\n'
-
-
-def type_B(lst):
-    opcode, r1, imm = lst[0], lst[1], lst[2]
-    return op_code.get(opcode) + '0' + reg.get(r1) + imm_to_bin(imm[1:]) + '\n'
-
-
-def type_C(lst):
-    opcode, r1, r2 = lst[0], lst[1], lst[2]
-    return op_code.get(opcode) + '00000' + reg.get(r1) + reg.get(r2) + '\n'
-
-
-def type_D(lst):  # madd
-    opcode, r1, m_add = lst[0], lst[1], lst[2]
-    return op_code.get(opcode) + '0' + reg.get(r1) + m_add + '\n' # correct to get memory add and handle error here
-
-
-def type_E(lst):
-    opcode, m_add = lst[0], lst[1]
-    return op_code.get(opcode) + '0000' + m_add + '\n'
-
-
-def type_F(lst):
-    opcode = lst[0]
-    return op_code.get(opcode) + '00000000000'
-
 inst_type=[]
 def identify_error_type(lst):
     flag = 1
@@ -302,11 +272,14 @@ for line in all_instructions:
     tmp_words.append(words)
 print("tmp_words: ", tmp_words, "\n", sep="")
 
-var, inst, labels_list, labels = [], [], [], {}
+
+var, inst, labels_list, labels, var_dic = [], [], [], {}, {}
 # classification of labels, var dec & instructions.
+
 for line in tmp_words:
     if line[0] == "var":
         var.append(line[1])
+
     elif line[0][-1] == ":":
         labels[line[0]] = {pc, "mem_addr"}
         labels_list.append(line[0][0:-1])
@@ -315,6 +288,11 @@ for line in tmp_words:
     else:
         inst.append(line)
         pc += 1
+var_counter= len(all_instructions) - len(var)
+print(var_counter)
+for variable in var:
+    var_dic[variable]= var_counter
+    var_counter= var_counter + 1
 print("var: ", var, "\n", "inst: ", inst, "\n", "labels_list:", labels_list, "\n", sep="")
 
 
@@ -342,6 +320,35 @@ def check_all_errors():
     if flag == 0:
         print("error occured")
     return flag
+
+def type_A(lst):
+    opcode, r1, r2, r3 = lst[0], lst[1], lst[2], lst[3]
+    return op_code.get(opcode) + '00' + reg.get(r1) + reg.get(r2) + reg.get(r3) + '\n'
+
+
+def type_B(lst):
+    opcode, r1, imm = lst[0], lst[1], lst[2]
+    return op_code.get(opcode) + '0' + reg.get(r1) + imm_to_bin(imm[1:]) + '\n'
+
+
+def type_C(lst):
+    opcode, r1, r2 = lst[0], lst[1], lst[2]
+    return op_code.get(opcode) + '00000' + reg.get(r1) + reg.get(r2) + '\n'
+
+
+def type_D(lst):  # madd
+    opcode, r1, m_add = lst[0], lst[1], str(imm_to_bin(var_dic.get(lst[2])))
+    return op_code.get(opcode) + '0' + reg.get(r1) + m_add + '\n' # correct to get memory add and handle error here
+
+
+def type_E(lst):
+    opcode, m_add = lst[0], str(imm_to_bin(var_dic.get(lst[1])))
+    return op_code.get(opcode) + '0000' + m_add + '\n'
+
+
+def type_F(lst):
+    opcode = lst[0]
+    return op_code.get(opcode) + '00000000000'
 
 def print_binary(inst,insttype):
     print(inst)
