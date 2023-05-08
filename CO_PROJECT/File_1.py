@@ -75,10 +75,10 @@ def typos(list):
     print("typos argument: ", list)
     flag = 1
     for words in list:
-        flag |= identify_error_type(words)
+        flag &= identify_error_type(words)
     return flag
 
-
+"""
 def var_not_declared(lst):
     flag = 1
     declared = {}
@@ -95,7 +95,14 @@ def var_not_declared(lst):
                     print(f"ERROR: variable {var_name} is not declared")
                     flag = 0
     return flag
-
+"""
+def var_not_dec(inst,var):
+    flag=1
+    for ins in inst:
+        if (ins[0] in op_type.get("D") or ins[0] in op_type.get("E")) and ins[-1] not in var:
+            print(f"ERROR: variable {ins[-1]} is not declared")
+            flag=0
+    return flag
 
 def not_defined_at_beginning(list1, list2):
     print(list)
@@ -176,7 +183,7 @@ def error_type_C(lst):
         flag = 0
     return flag
 
-
+#need var wunly
 def error_type_D(lst, labl, varl):  # call with var list. #ud var, label as var can be extended here.
     flag = 1
     if len(lst) == 3:
@@ -187,7 +194,7 @@ def error_type_D(lst, labl, varl):  # call with var list. #ud var, label as var 
                 print("ERROR: Use of label as variable")
             elif (not (lst[2] in varl)):  # replace with condition if m_add is correct
                 flag = 0
-                print("ERROR: in m_add")
+                print("ERROR: in m_add only variables can be used as m_add")
 
         else:
             flag = 0
@@ -199,7 +206,7 @@ def error_type_D(lst, labl, varl):  # call with var list. #ud var, label as var 
         flag = 0
     return flag
 
-
+# use of label as var
 def error_type_E(lst, varl):  # call with var list. #ud var, label as var can be extended here.
     flag = 0
     if len(lst) == 2:
@@ -213,7 +220,7 @@ def error_type_E(lst, varl):  # call with var list. #ud var, label as var can be
     else:
         flag = 0
         print("ERROR: Syntax error")
-        if lst[-1] + ":" in labl:
+        if lst[-1] + ":" in  labels_list:
             print("ERROR: Use of label as variable")
     return flag
 
@@ -245,10 +252,11 @@ def identify_error_type(lst):
         print("d")
         inst_type.append("d")
         flag = error_type_D(lst, labels_list, var)
+        #print("d ka flag",flag)
     elif lst[0] in op_type.get("E"):
         print("e")
         inst_type.append("e")
-        flag = error_type_E(lst)
+        flag = error_type_E(lst,var)
     elif lst[0] in op_type.get("F"):
         print("f")
         inst_type.append("f")
@@ -256,6 +264,7 @@ def identify_error_type(lst):
     else:
         print("ERROR: Typo in instruction name.")
         flag = 0
+    #print("end ka flag",flag)
     return flag
 
 
@@ -264,13 +273,13 @@ pc = 0
 f = open('input.txt', 'r')
 page = f.read()
 all_instructions = [x.lstrip().rstrip() for x in page.split('\n') if x != ""]
-print("all_instructions: ", all_instructions, "\n", sep="")
+#print("all_instructions: ", all_instructions, "\n", sep="")
 
 tmp_words = []  # nested list to store all instructions
 for line in all_instructions:
     words = line.split()
     tmp_words.append(words)
-print("tmp_words: ", tmp_words, "\n", sep="")
+#print("tmp_words: ", tmp_words, "\n", sep="")
 
 
 var, inst, labels_list, labels, var_dic = [], [], [], {}, {}
@@ -288,18 +297,21 @@ for line in tmp_words:
     else:
         inst.append(line)
         pc += 1
+
 var_counter= len(all_instructions) - len(var)
-print(var_counter)
+#print(var_counter)
 for variable in var:
     var_dic[variable]= var_counter
     var_counter= var_counter + 1
-print("var: ", var, "\n", "inst: ", inst, "\n", "labels_list:", labels_list, "\n", sep="")
+#print("var: ", var, "\n", "inst: ", inst, "\n", "labels_list:", labels_list, "\n", sep="")
+
 
 
 # checking all errors
 def check_all_errors():
     flag = 1
-    if var_not_declared(all_instructions) != 1:
+    #if var_not_declared(all_instructions) != 1:
+    if var_not_dec(inst,var) != 1:
         flag = 0
         print(flag, "1")
     if not_defined_at_beginning(tmp_words, all_instructions) != 1:
