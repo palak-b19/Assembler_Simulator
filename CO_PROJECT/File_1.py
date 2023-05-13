@@ -2,7 +2,7 @@
 # variable name cannot be opcode instructions
 op_code = {'add': '00000',
            'sub': '00001',
-           'mov': '00010',
+           'mov': {'00010','00011'}, #B,C
            'ld': '00100',
            'st': '00101',
            'mul': '00110',
@@ -431,11 +431,15 @@ def type_A(lst):
 
 def type_B(lst):
     opcode, r1, imm = lst[0], lst[1], lst[2]
+    if opcode =='mov':
+        return '00010' + '0' + reg.get(r1) + imm_to_bin(imm[1:]) + '\n'
     return op_code.get(opcode) + '0' + reg.get(r1) + imm_to_bin(imm[1:]) + '\n'
 
 
 def type_C(lst):
     opcode, r1, r2 = lst[0], lst[1], lst[2]
+    if opcode =='mov':
+        return '00011' + '00000' + reg.get(r1) + reg.get(r2) + '\n'
     return op_code.get(opcode) + '00000' + reg.get(r1) + reg.get(r2) + '\n'
 
 
@@ -453,9 +457,12 @@ def type_D(lst):  # madd
 """
 def type_E(lst):
     tmp_label=lst[-1]+":"
-    for i in empty_lines:
+    for i in tmp_words:
         if tmp_label in i:
-            lab_add = empty_lines.index(i) - len(var)
+            tmp_label=i[1::]
+    #print(tmp_label)
+    lab_add=inst.index(tmp_label)
+    #print("heree",lab_add)
     opcode= lst[0] #add binary label add
     return op_code.get(opcode) + '0000' + str(imm_to_bin(lab_add)) + '\n'
 def type_F(lst):
