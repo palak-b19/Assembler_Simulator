@@ -91,6 +91,39 @@ def check_imm(n,tmp_ins):
 def imm_to_bin(n):
     return "{0:07b}".format(int(n))
 
+def check_labels(list1, list2):
+    flag = 1
+    for line in list1:
+        word = line
+        l=word.split()
+        print(word)
+        if l[0] in op_type["E"]:
+            label=l[1]
+            if label not in labels_list:
+                print("ERROR: Use of undefined label")
+                flag = 0
+    return flag
+                
+def flags(list1,list2):
+    flag=1
+    #op_type["C"][0] checks for mov ki condition
+    for line in list2:
+        word = line
+        print(word)
+        for inst in tmp_words:
+            if "FLAGS" in inst:
+                if inst[0]==mov and inst[-1]=="FLAGS" and len(word)==3:
+                    flag=1
+            else:
+                print("ERROR: Illegal use of FLAGS register")
+                print('Error in line',  +1)
+                flag = 0
+    return flag
+#y=check_labels_and_flags(all_instructions,empty_lines)
+#z=flags(all_instructions,empty_lines)
+#print(y)
+#print(z)
+
 
 def typos(list):
     print("typos argument: ", list)
@@ -414,6 +447,8 @@ def check_all_errors():
     print(flag, "3")
     if immediate() != 1:
         flag = 0
+    if check_labels(tmp_words)!=1:
+        flag=0
     print(flag, "4")
     if typos(inst) != 1:
         flag = 0
