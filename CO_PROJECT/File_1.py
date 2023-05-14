@@ -1,7 +1,6 @@
 # assumptions:
 # variable name cannot be opcode instructions
 
-
 op_code = {'add': '00000',
            'sub': '00001',
            'mov': {'00010','00011'}, #B,C
@@ -38,7 +37,6 @@ reg = {'R0': '000',
        'R6': '110',
        'FLAGS' : '111'}
 
-
 def error_lno2(lno):
     for i in range(len(empty_lines)):
         if empty_lines[i] == all_instructions[lno]:
@@ -52,7 +50,6 @@ def error_inst(l):
         if all_with_elines[i][0] == l and all_with_elines[i][1]==False:
             all_with_elines[i][1]=True
             return (i + 1)
-
 def error_1(lst, lno):
     lst_str = []
     for i in lst:
@@ -180,7 +177,8 @@ def immediate():
     flag = 1
     for line in all_instructions:
         if "$" in line:
-            imm = line[-1]
+            k = line.split()
+            imm = k[-1]
             if imm[1:].isdigit():
                 imm = int(imm[1:])
                 if not check_imm(imm,line):
