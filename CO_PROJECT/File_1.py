@@ -59,7 +59,6 @@ def error_1(lst, lno):
         if empty_lines[i] == lst_str[lno]:
             return i + 1
 
-
 def hlt_checker(list, tmp_words):
     flag = 1
     tmp_flag = 0
@@ -69,21 +68,21 @@ def hlt_checker(list, tmp_words):
             tmp_flag |= 1
     if not (tmp_flag):
         flag = 0
-        print("Missing hlt instruction.")
+        # print("Missing hlt instruction.")
         error_output.append("Missing hlt instruction.")
 
     else:
         if (tmp_words[-1][-1] != "hlt"):
             flag = 0
             s="Error as hlt is not being used as the last instruction.Error in line:"+ str(word_index+1)
-            print("Error as hlt is not being used as the last instruction.Error in line:", word_index+1)
+            # print("Error as hlt is not being used as the last instruction.Error in line:", word_index+1)
             error_output.append(s)
         for instruction in tmp_words[0:-1]:
             if instruction[-1] == "hlt":
                 flag = 0
                 s="ERROR_in_hlt: General syntax error.Error in line:"+str(word_index+1)
-                print("ERROR_in_hlt: General syntax error.Error in line:",
-                      word_index+1)  # hlt occurs before last instruction
+                # print("ERROR_in_hlt: General syntax error.Error in line:",
+                #       word_index+1)  # hlt occurs before last instruction
                 error_output.append(s)
     return flag
 
@@ -94,7 +93,7 @@ def check_imm(n,tmp_ins):
         for it in empty_lines:
             if tmp_ins in it:
                 lab_add = empty_lines.index(it) + 1
-        print("Illegal immediate value. Error in line",lab_add)
+        # print("Illegal immediate value. Error in line",lab_add)
         s="Illegal immediate value. Error in line"+str(lab_add)
         error_output.append(s)
         return False
@@ -110,7 +109,7 @@ def check_labels(list1):
             if label not in labels_list:
                 word=" ".join(word)
                 indx=empty_lines.index(word)+1
-                print("ERROR: Use of undefined label.Error in line ",indx)
+                # print("ERROR: Use of undefined label.Error in line ",indx)
                 s="ERROR: Use of undefined label.Error in line "+ str(indx)
                 error_output.append(s)
                 flag = 0
@@ -124,7 +123,7 @@ def flags():
       if not(i[0]=="mov" and i[-1]=="FLAGS" and len(i)==3):
         flag=0
         index = k +1 
-        print("ERROR: Illegal use of FLAGS register. Error in line ",inst.index(i) +1)
+        # print("ERROR: Illegal use of FLAGS register. Error in line ",inst.index(i) +1)
         s="ERROR: Illegal use of FLAGS register. Error in line "+str(inst.index(i) +1)
         error_output.append(s)
   return flag
@@ -141,13 +140,13 @@ def var_not_dec(inst, var):
     flag = 1
     for i, ins in enumerate(inst):
         if (ins[0] in op_type.get("D")) and (ins[-1] not in var) and len(ins)==2:
-            print(f"ERROR: variable {ins[-1]} is not declared. Error in line:", error_1(inst, i))
+            # print(f"ERROR: variable {ins[-1]} is not declared. Error in line:", error_1(inst, i))
             s=f"ERROR: variable {ins[-1]} is not declared. Error in line:" + str(error_1(inst, i))
             error_output.append(s)
             flag = 0
         elif ins[0] in op_type.get("E") and ins[-1] not in labels_list:
             s=f"ERROR: variable {ins[-1]} is not declared. Error in line:"+str(error_1(inst, i))
-            print(f"ERROR: variable {ins[-1]} is not declared. Error in line:", error_1(inst, i))
+            # print(f"ERROR: variable {ins[-1]} is not declared. Error in line:", error_1(inst, i))
             error_output.append(s)
             flag = 0
     return flag
@@ -157,7 +156,7 @@ def not_defined_at_beginning(list1):
     for i, line in enumerate(list1):
         if line[0] == "var" and len(line) == 2:
             if line[-1] in op_code.keys():
-                print("Opcode cannot be used as variable name. Error in line:", error_1(list1, i))
+                # print("Opcode cannot be used as variable name. Error in line:", error_1(list1, i))
                 s="Opcode cannot be used as variable name. Error in line:" + str(error_1(list1, i))
                 error_output.append(s)
                 flag = 0
@@ -167,7 +166,7 @@ def not_defined_at_beginning(list1):
         j+=1
     for i in range(j, len(functions)):
         if functions[i] == 'var' and len(tmp_words[i])==2:
-            print("ERROR:Variables not declared at the beginning. Error in line:", error_inst(tmp_words[i]))
+            # print("ERROR:Variables not declared at the beginning. Error in line:", error_inst(tmp_words[i]))
             s="ERROR:Variables not declared at the beginning. Error in line:"+str(error_inst(tmp_words[i]))
             error_output.append(s)
             flag = 0
@@ -185,7 +184,7 @@ def immediate():
                     flag = 0
             else:
                 s="Immediate is not a numeric value. Error in line:" + str(error_lno2(all_instructions.index(line)))
-                print("Immediate is not a numeric value. Error in line:", error_lno2(all_instructions.index(line)))
+                # print("Immediate is not a numeric value. Error in line:", error_lno2(all_instructions.index(line)))
                 error_output.append(s)
                 flag = 0
     return flag
@@ -194,12 +193,12 @@ def error_type_A(lst):
     flag = 1
     if len(lst) == 4:
         if not (lst[1] in reg.keys()) & (lst[2] in reg.keys()) & (lst[3] in reg.keys()):
-            print("ERROR:Typos in register name. Error in line:", (empty_lines.index(" ".join(lst)+1)))
+            # print("ERROR:Typos in register name. Error in line:", (empty_lines.index(" ".join(lst)+1)))
             s="ERROR:Typos in register name. Error in line:"+ str(empty_lines.index(" ".join(lst)+1))
             error_output.append(s)
             flag = 0
     else:
-        print("ERROR: Syntax error. Error in line:", error_inst(lst)) #checked
+        # print("ERROR: Syntax error. Error in line:", error_inst(lst)) #checked
         s="ERROR: Syntax error. Error in line:"+ str(error_inst(lst))
         error_output.append(s)
         flag = 0
@@ -209,12 +208,12 @@ def error_type_B(lst):
     flag = 1
     if len(lst) == 3:
         if not (lst[1] in reg.keys()):
-            print("ERROR:Typos in register name. Error in line:", error_inst(lst))
+            # print("ERROR:Typos in register name. Error in line:", error_inst(lst))
             s="ERROR:Typos in register name. Error in line:"+str(error_inst(lst))
             error_output.append(s)
             flag = 0
     else:
-        print("ERROR: Syntax error. Error in line ",error_inst(lst))
+        # print("ERROR: Syntax error. Error in line ",error_inst(lst))
         s="ERROR: Syntax error. Error in line "+ str(error_inst(lst))
         error_output.append(s)
         flag = 0
@@ -225,12 +224,12 @@ def error_type_C(lst):
     if len(lst) == 3:
         if not (lst[1] in reg.keys()) & (lst[2] in reg.keys()):
           indx=empty_lines.index(" ".join(lst))+1
-          print("ERROR:Typos in register name. Error in line:", indx)
+        #   print("ERROR:Typos in register name. Error in line:", indx)
           s="ERROR:Typos in register name. Error in line:"+str(indx)
           error_output.append(s)
           flag = 0
     else:
-        print("ERROR: Syntax error. Error in line ",empty_lines.index(" ".join(lst))+1)
+        # print("ERROR: Syntax error. Error in line ",empty_lines.index(" ".join(lst))+1)
         s="ERROR: Syntax error. Error in line "+str(empty_lines.index(" ".join(lst))+1)
         error_output.append(s)
         flag = 0
@@ -242,26 +241,26 @@ def error_type_D(lst, labl, varl):  # call with var list.
         if lst[1] in reg.keys():
             if lst[-1] in labl:
                 flag = 0
-                print("ERROR: Use of label as variable.\nError in line:",error_inst(lst))
+                # print("ERROR: Use of label as variable.\nError in line:",error_inst(lst))
                 s="ERROR: Use of label as variable.\nError in line:"+str(error_inst(lst))
                 error_output.append(s)
             elif (not (lst[2] in varl)):  
                 flag = 0
-                print("ERROR: in m_add only variables can be used as m_add. Error in line:",error_inst(lst))
+                # print("ERROR: in m_add only variables can be used as m_add. Error in line:",error_inst(lst))
                 s="ERROR: in m_add only variables can be used as m_add. Error in line:"+str(error_inst(lst))
                 error_output.append(s)
 
         else:
             flag = 0
-            print("ERROR: Typos in register name. Error in line:", error_inst(lst))
+            # print("ERROR: Typos in register name. Error in line:", error_inst(lst))
             s="ERROR: Typos in register name. Error in line:"+str(error_inst(lst))
             error_output.append(s)
             if lst[-1] + ":" in labl:
-                print("ERROR: Use of label as variable. Error in line:", error_inst(lst))
+                # print("ERROR: Use of label as variable. Error in line:", error_inst(lst))
                 s="ERROR: Use of label as variable. Error in line:"+ str(error_inst(lst))
                 error_output.append(s)
     else:
-        print("ERROR: Syntax error. Error in line:", error_inst(lst))
+        # print("ERROR: Syntax error. Error in line:", error_inst(lst))
         s="ERROR: Syntax error. Error in line:"+str(error_inst(lst))
         error_output.append(s)
         flag = 0
@@ -272,20 +271,22 @@ def error_type_E(lst, varl):  # call with var list. #undefinedd var, label as va
     if len(lst) == 2:
         if lst[-1]  in varl:
             flag = 0
-            print("ERROR: Use of variable as label. Error in line:", (empty_lines.index(" ".join(lst)+1)))
+            # print("ERROR: Use of variable as label. Error in line:", (empty_lines.index(" ".join(lst)+1)))
             s="ERROR: Use of variable as label. Error in line:"+str(empty_lines.index(" ".join(lst)+1))
             error_output.append(s)
 
         elif not (lst[1] in labels_list): 
             flag = 0
-            print("ERROR: in m_add")
+            s="ERROR: in m_add"
+            # print("ERROR: in m_add")
+            error_output.append(s)
     else:
         flag = 0
-        print("ERROR: Syntax error.Error in line: ",(empty_lines.index(" ".join(lst)+1)))
+        # print("ERROR: Syntax error.Error in line: ",(empty_lines.index(" ".join(lst)+1)))
         s="ERROR: Syntax error.Error in line: "+str(empty_lines.index(" ".join(lst)+1))
         error_output.append(s)
         if lst[-1] in varl:
-            print("ERROR: Use of variable as label. Error in line:", (empty_lines.index(" ".join(lst)+1)))
+            # print("ERROR: Use of variable as label. Error in line:", (empty_lines.index(" ".join(lst)+1)))
             s="ERROR: Use of variable as label. Error in line:"+str(empty_lines.index(" ".join(lst)+1))
             error_output.append(s)
     return flag
@@ -318,7 +319,7 @@ def identify_error_type(lst):
         inst_type.append("f")
     else:
         s="ERROR:Typos in instruction name. Error in line:" + str(error_inst(lst))
-        print("ERROR:Typos in instruction name. Error in line:",error_inst(lst)) #checked
+        # print("ERROR:Typos in instruction name. Error in line:",error_inst(lst)) #checked
         error_output.append(s)
         flag = 0
     return flag
@@ -340,9 +341,9 @@ def check_all_errors():
         flag=0
     if typos(inst) != 1:
         flag = 0
-    if flag == 0:
-        print("error occured")
-    return (flag and empty_label)
+    # if flag == 0:
+        # print("error occured")
+    return (flag and empty_label and flag_out)
 
 #functions to print binary of the specific type of instructions
 def type_A(lst):
@@ -430,7 +431,7 @@ for line in all_instructions:
 
 # classification of labels, var dec & instructions.
 empty_label= 1
-
+flag_out=1
 for i in range(0,len(tmp_words)):
     line=tmp_words[i]
     if line[0] == "var":
@@ -438,8 +439,9 @@ for i in range(0,len(tmp_words)):
             var.append(line[1])
         else:
             pe="General Syntax error. Error in line"+ str(error_inst(line))
-            print("General Syntax error. Error in line",error_inst(line))
+            # print("*General Syntax error. Error in line",error_inst(line))
             error_output.append(pe)
+            flag_out&=0
 
     elif line[0][-1] == ":":
         labels_list.append(line[0][0:-1])
@@ -453,8 +455,9 @@ for i in range(0,len(tmp_words)):
 
     elif (line[0] in op_code.keys() and len(line)<2 and "hlt" not in line) or line[0] not in op_code.keys():
         pe="General Syntax error. Error in line"+ str(error_inst(line))
-        print("General Syntax error. Error in line",error_inst(line))
+        # print("General Syntax error. Error in line",error_inst(line))
         error_output.append(pe)
+        flag_out&=0
 
     else:
         inst.append(line)
@@ -464,10 +467,11 @@ for variable in var:
     var_dic[variable] = var_counter
     var_counter = var_counter + 1
 
-
+final_flag=check_all_errors() and flag_out
 # generating and printing machine code
-if check_all_errors() != 0:
-    print("printing binary")
+# if check_all_errors() != 0:
+if final_flag !=0:
+    # print("printing binary")
     print_binary(inst, inst_type)
 else:
     out=""
