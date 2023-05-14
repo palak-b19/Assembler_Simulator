@@ -33,7 +33,8 @@ reg = {'R0': '000',
        'R3': '011',
        'R4': '100',
        'R5': '101',
-       'R6': '110'}
+       'R6': '110',
+       'FLAGS' : '111'}
 
 
 def error_lno(lno):
@@ -91,39 +92,28 @@ def check_imm(n,tmp_ins):
 def imm_to_bin(n):
     return "{0:07b}".format(int(n))
 
-def check_labels(list1, list2):
+def check_labels(list1):
     flag = 1
-    for line in list1:
-        word = line
-        l=word.split()
+    for word in list1:
+        #l=word.split()
         print(word)
-        if l[0] in op_type["E"]:
-            label=l[1]
+        if word[0] in op_type["E"]:
+            label=word[1]
             if label not in labels_list:
                 print("ERROR: Use of undefined label")
                 flag = 0
     return flag
                 
-def flags(list1,list2):
-    flag=1
-    #op_type["C"][0] checks for mov ki condition
-    for line in list2:
-        word = line
-        print(word)
-        for inst in tmp_words:
-            if "FLAGS" in inst:
-                if inst[0]==mov and inst[-1]=="FLAGS" and len(word)==3:
-                    flag=1
-            else:
-                print("ERROR: Illegal use of FLAGS register")
-                print('Error in line',  +1)
-                flag = 0
-    return flag
-#y=check_labels_and_flags(all_instructions,empty_lines)
-#z=flags(all_instructions,empty_lines)
-#print(y)
-#print(z)
-
+def flags():
+  flag=1
+  for k in range (0,len(inst)):
+    i =inst[k]
+    if "FLAGS" in i:
+      if not(i[0]=="mov" and i[-1]=="FLAGS" and len(i)==3):
+        flag=0
+        index = k +1 
+        print("ERROR: Illegal use of FLAGS register, Error in line ",inst.index(i) +1)
+  return flag
 
 def typos(list):
     print("typos argument: ", list)
@@ -243,6 +233,7 @@ def immediate():
 
 
 def error_type_A(lst):
+    print("hear in errora",lst)
     flag = 1
     #print("a", " ".join(lst))
     #print(empty_lines[6])
@@ -253,7 +244,7 @@ def error_type_A(lst):
             print("ERROR:Typos in register name.\nError in line:", (empty_lines.index(" ".join(lst)))+1)
             flag = 0
     else:
-        print("ERROR: Syntax error. \nError in line:", (empty_lines.index(" ".join(lst)))+1) #checked
+        print("ERROR: Syntax error. \nError in line:", (inst.index(lst))+1) #checked
         flag = 0
     return flag
 
@@ -273,9 +264,11 @@ def error_type_B(lst):
 def error_type_C(lst):
     flag = 1
     if len(lst) == 3:
+        print("here",lst)
         if not (lst[1] in reg.keys()) & (lst[2] in reg.keys()):
-            print("ERROR:Typos in register name.\nError in line:", (empty_lines.index(" ".join(lst)) + 1))
-            flag = 0
+          index= inst.index(x) + 1
+          print("ERROR:Typos in register name.\nError in line:", index)
+          flag = 0
     else:
         print("ERROR: Syntax error")
         flag = 0
@@ -388,9 +381,9 @@ def identify_error_type(lst):
 
 
 pc = 0
-# reading input file.
+#reading input file.
 f = open('input1.txt', 'r')
-page = f.read()
+page = f.read() 
 all_instructions = [x.lstrip().rstrip() for x in page.split('\n') if x != ""]
 # print("all_instructions: ", all_instructions, "\n", sep="")
 empty_lines = [x.lstrip().rstrip() for x in page.split('\n')]
@@ -448,6 +441,8 @@ def check_all_errors():
     if immediate() != 1:
         flag = 0
     if check_labels(tmp_words)!=1:
+        flag=0
+    if flags()!=1:
         flag=0
     print(flag, "4")
     if typos(inst) != 1:
