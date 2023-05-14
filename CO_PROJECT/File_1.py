@@ -387,11 +387,6 @@ def type_D(lst):  # madd
     opcode, r1, m_add = lst[0], lst[1], str(imm_to_bin(var_dic.get(lst[2])))
     return op_code.get(opcode) + '0' + reg.get(r1) + m_add + '\n'  # correct to get memory add and handle error here
 
-
-"""def type_E(lst):
-    opcode, m_add = lst[0], str(imm_to_bin(var_dic.get(lst[1])))
-    return op_code.get(opcode) + '0000' + m_add + '\n'
-"""
 def type_E(lst):
     tmp_label=lst[-1]+":"
     for i in tmp_words:
