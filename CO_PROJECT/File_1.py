@@ -360,7 +360,7 @@ def check_all_errors():
     print("here",(flag and empty_label))
     return (flag and empty_label)
 
-
+#assumption- register will take correct name only meaning FLAGS1 register won't be passed
 def type_A(lst):
     opcode, r1, r2, r3 = lst[0], lst[1], lst[2], lst[3]
     return op_code.get(opcode) + '00' + reg.get(r1) + reg.get(r2) + reg.get(r3) + '\n'
