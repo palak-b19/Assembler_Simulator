@@ -274,7 +274,7 @@ def error_type_A(lst):
             flag = 0
     else:
         print("ERROR: Syntax error. Error in line:", (inst.index(lst))+1) #checked
-        s="ERROR: Syntax error. Error in line:"+ str(inst.index(lst))+1
+        s="ERROR: Syntax error. Error in line:"+ str((inst.index(lst))+1)
         error_output.append(s)
         flag = 0
     return flag
