@@ -104,23 +104,6 @@ def typos(list):
     return flag
 
 
-# def var_not_declared(lst):
-#     flag = 1
-#     declared = {}
-#     for i in lst:
-#         if i.startswith('var'):
-#             var_name = i.split()[1]
-#             declared[var_name] = "declared"
-#     for i in lst:
-#         word = i.split()
-#         for w in word:
-#             if 'var' in w:
-#                 var_name = word[-1]
-#                 if var_name not in declared:
-#                     print(f"ERROR: variable {var_name} is not declared")
-#                     flag = 0
-#     return flag
-
 def var_not_dec(inst, var):
     print(inst)
     flag = 1
@@ -165,32 +148,6 @@ def not_defined_at_beginning(list1, list2):
     return flag
 
 
-# def not_defined_at_beginning(list1, list2):
-#     print(list)
-#     flag = 1
-#     for line in list1:
-#         if line[0] == "var" and len(line) == 2:
-#             if line[-1] in op_code.keys():
-#                 print("Opcode cannot be used as instruction name. Error in line: ",error_1(list1,list1.index(line)))
-#                 flag = 0
-#         # else:
-#         #    print("ERROR_in_ndab: General Syntax error")
-#     functions = []
-#     for line in list2:
-#         line = line.split()
-#         functions.append(line[0])
-#     # print(functions)
-#     for i in functions:
-#         # print(i)
-#         if i != 'var':
-#             non_var_index = functions.index(i)
-#             print(non_var_index)
-#             break
-#     for i in range(non_var_index, len(functions)):
-#         if functions[i] == 'var':
-#             print("ERROR:Variables not declared at the beginning. Error in line:",error_lno(i))
-#             flag = 0
-#     return flag
 
 def immediate():
     flag = 1
@@ -249,9 +206,6 @@ def error_type_C(lst):
     return flag
 
 
-
-
-# need var wunly
 def error_type_D(lst, labl, varl):  # call with var list. #ud var, label as var can be extended here.
     flag = 1
     if len(lst) == 3:
@@ -275,25 +229,6 @@ def error_type_D(lst, labl, varl):  # call with var list. #ud var, label as var 
         flag = 0
     return flag
 
-"""
-# use of label as var
-def error_type_E(lst, varl):  # call with var list. #ud var, label as var can be extended here.
-    flag = 0
-    if len(lst) == 2:
-        if lst[-1] + ":" in varl:
-            flag = 0
-            print("ERROR: Use of label as variable.\nError in line:", (empty_lines.index(" ".join(lst))))
-
-        elif not (lst[1] in varl):  # replace with condition if m_add is correct
-            flag = 0
-            print("ERROR: in m_add")
-    else:
-        flag = 0
-        print("ERROR: Syntax error")
-        if lst[-1] + ":" in labels_list:
-            print("ERROR: Use of label as variable. Error in line", (empty_lines.index(" ".join(lst))))
-    return flag
-"""
 def error_type_E(lst, varl):  # call with var list. #ud var, label as var can be extended here.
     flag = 1
     if len(lst) == 2:
