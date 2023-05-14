@@ -30,21 +30,19 @@ op_type = {"A": ['add', 'sub', 'mul', 'xor', 'or', 'and'],
            "F": ['hlt']}
 
 reg = {'R0': '000',
-       'r0': '000',
        'R1': '001',
-       'r1': '001',
        'R2': '010',
-       'r2': '010',
        'R3': '011',
-       'r3': '011',
        'R4': '100',
-       'r4': '100',
        'R5': '101',
-       'r5': '101',
        'R6': '110',
-       'r6': '110',
        'FLAGS' : '111'}
 
+
+def error_lno2(lno):
+    for i in range(len(empty_lines)):
+        if empty_lines[i] == all_instructions[lno]:
+            return i + 1
 def error_lno(lno):
     for i in range(len(all_with_elines)):
         if all_with_elines[i] == all_instructions[lno]:
@@ -96,8 +94,11 @@ def check_imm(n,tmp_ins):
     if 0 <= int(n) <= 127:
         return True
     else:
-        print("Illegal immediate value. Error in line",error_inst(tmp_ins))
-        s="Illegal immediate value. Error in line"+str(error_inst(tmp_ins))
+        for it in empty_lines:
+            if tmp_ins in it:
+                lab_add = empty_lines.index(it) + 1
+        print("Illegal immediate value. Error in line",lab_add)
+        s="Illegal immediate value. Error in line"+str(lab_add)
         error_output.append(s)
         return False
 
@@ -177,7 +178,7 @@ def not_defined_at_beginning(list1):
   
 def immediate():
     flag = 1
-    for line in tmp_words:
+    for line in all_instructions:
         if "$" in line:
             imm = line[-1]
             if imm[1:].isdigit():
@@ -185,8 +186,8 @@ def immediate():
                 if not check_imm(imm,line):
                     flag = 0
             else:
-                s="Immediate is not a numeric value. Error in line:"+ str(error_inst(line))
-                print("Immediate is not a numeric value. Error in line:",error_inst(line))
+                s="Immediate is not a numeric value. Error in line:" + str(error_lno2(all_instructions.index(line)))
+                print("Immediate is not a numeric value. Error in line:", error_lno2(all_instructions.index(line)))
                 error_output.append(s)
                 flag = 0
     return flag
@@ -324,73 +325,6 @@ def identify_error_type(lst):
         flag = 0
     return flag
 
-#main
-# pc = 0 not needed
-#reading input file.
-f = open('input.txt', 'r')
-page = f.read() 
-
-all_instructions = [x.lstrip().rstrip() for x in page.split('\n') if x != ""]
-empty_lines = [x.lstrip().rstrip() for x in page.split('\n')]
-tmp_words = [] 
-error_output=[]
-inst_type = [] 
-var, inst, labels_list, labels, var_dic = [], [], [], {}, {}
-labels_with_inst=[]
-all_with_elines=[]
-
-for lin in empty_lines:
-        lin=lin.split()
-        if lin==[]:
-            all_with_elines.append([[],False])
-        elif lin[0][-1]==":" :
-            if len(lin)==1:
-                all_with_elines.append([lin[0],False])
-            else:
-                all_with_elines.append([lin[1::],False])
-        else:
-            all_with_elines.append([lin,False])
-
-for line in all_instructions:
-    words = line.split()
-    tmp_words.append(words)
-
-# classification of labels, var dec & instructions.
-empty_label= 1
-
-for i in range(0,len(tmp_words)):
-    line=tmp_words[i]
-    if line[0] == "var":
-        if len(line)==2:
-            var.append(line[1])
-        else:
-            pe="General Syntax error. Error in line"+ str(error_inst(line))
-            print("General Syntax error. Error in line",error_inst(line))
-            error_output.append(pe)
-
-    elif line[0][-1] == ":":
-        labels_list.append(line[0][0:-1])
-        if len(line)==1:
-            pass
-        else:
-            l=" ".join(line)
-            labels_with_inst.append(l)
-            inst.append(line[1:])  # adding the instruction only not the name in the inst list
-        #pc += 1
-
-    elif (line[0] in op_code.keys() and len(line)<2 and "hlt" not in line) or line[0] not in op_code.keys():
-        pe="General Syntax error. Error in line"+ str(error_inst(line))
-        print("General Syntax error. Error in line",error_inst(line))
-        error_output.append(pe)
-
-    else:
-        inst.append(line)
-        #pc += 1
-var_counter = len(all_instructions) - len(var)
-for variable in var:
-    var_dic[variable] = var_counter
-    var_counter = var_counter + 1
-
 # checking all errors
 def check_all_errors():
     flag = 1
@@ -464,6 +398,74 @@ def print_binary(inst, insttype):
             out += type_F(inst[i])
     f = open('output.txt', 'w')
     f.write(out)
+
+#main
+# pc = 0 not needed
+#reading input file.
+f = open('input.txt', 'r')
+page = f.read() 
+
+all_instructions = [x.lstrip().rstrip() for x in page.split('\n') if x != ""]
+empty_lines = [x.lstrip().rstrip() for x in page.split('\n')]
+tmp_words = [] 
+error_output=[]
+inst_type = [] 
+var, inst, labels_list, labels, var_dic = [], [], [], {}, {}
+labels_with_inst=[]
+all_with_elines=[]
+
+for lin in empty_lines:
+        lin=lin.split()
+        if lin==[]:
+            all_with_elines.append([[],False])
+        elif lin[0][-1]==":" :
+            if len(lin)==1:
+                all_with_elines.append([lin[0],False])
+            else:
+                all_with_elines.append([lin[1::],False])
+        else:
+            all_with_elines.append([lin,False])
+
+for line in all_instructions:
+    words = line.split()
+    tmp_words.append(words)
+
+# classification of labels, var dec & instructions.
+empty_label= 1
+
+for i in range(0,len(tmp_words)):
+    line=tmp_words[i]
+    if line[0] == "var":
+        if len(line)==2:
+            var.append(line[1])
+        else:
+            pe="General Syntax error. Error in line"+ str(error_inst(line))
+            print("General Syntax error. Error in line",error_inst(line))
+            error_output.append(pe)
+
+    elif line[0][-1] == ":":
+        labels_list.append(line[0][0:-1])
+        if len(line)==1:
+            pass
+        else:
+            l=" ".join(line)
+            labels_with_inst.append(l)
+            inst.append(line[1:])  # adding the instruction only not the name in the inst list
+        #pc += 1
+
+    elif (line[0] in op_code.keys() and len(line)<2 and "hlt" not in line) or line[0] not in op_code.keys():
+        pe="General Syntax error. Error in line"+ str(error_inst(line))
+        print("General Syntax error. Error in line",error_inst(line))
+        error_output.append(pe)
+
+    else:
+        inst.append(line)
+        #pc += 1
+var_counter = len(all_instructions) - len(var)
+for variable in var:
+    var_dic[variable] = var_counter
+    var_counter = var_counter + 1
+
 
 # generating and printing machine code
 if check_all_errors() != 0:
