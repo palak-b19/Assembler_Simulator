@@ -301,7 +301,7 @@ def error_type_E(lst, varl):  # call with var list. #ud var, label as var can be
             flag = 0
             print("ERROR: Use of variable as label.\nError in line:", (empty_lines.index(" ".join(lst))))
 
-        elif not (lst[1] in labels_list):  # replace with condition if m_add is correct
+        elif lst[1] not in labels_list:  # replace with condition if m_add is correct
             flag = 0
             print("ERROR: in m_add")
     else:
