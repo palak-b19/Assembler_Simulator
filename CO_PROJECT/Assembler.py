@@ -121,13 +121,18 @@ def imm_to_bin(n):
 
 
 def check_labels(list1):
+  empty_lines2=[]
   flag = 1
   for word in list1:
     if word[0] in op_type["E"]:
       label = word[1]
       if label not in labels_list:
         word = " ".join(word)
-        indx = empty_lines.index(word) + 1
+        for k in empty_lines:
+            k=k.strip().split()
+            k=" ".join(k)
+            empty_lines2.append(k)
+        indx = empty_lines2.index(word) + 1
         s = "ERROR: Use of undefined label.Error in line " + str(indx)
         error_output.append(s)
         flag = 0
@@ -376,7 +381,7 @@ def check_all_errors():
 
 #main
 #reading input file.
-f = open('input1.txt', 'r')
+f = open('input.txt', 'r')
 page = f.read()
 all_instructions = [x.lstrip().rstrip() for x in page.split('\n') if x != ""]
 empty_lines = [x.lstrip().rstrip() for x in page.split('\n')]
