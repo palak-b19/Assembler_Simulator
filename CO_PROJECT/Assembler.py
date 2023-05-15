@@ -1,5 +1,7 @@
 """                            ASUMPTIONS:
   label type instruction: only 1 label declaration per line i.e, ":"occurs only once.
+  
+  mov R1 FLAGS is taken to be a valid command since FLAGS doesn't represent a variable but instead represents a valid register name
 """
 
 op_code = {
