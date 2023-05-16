@@ -10,3 +10,8 @@
   - Use of FLAG register:
     - 'FLAGS' is a valid register name
     - mov reg1 FLAGS is the only valid  instruction involving FLAG register.
+
+### Path To Run Assembler
+ - CO-project -> CO_A_P1 -> Simple-Assembler -> Assembler.py
+
+#### To view all changes and history view Old_Assembler 
