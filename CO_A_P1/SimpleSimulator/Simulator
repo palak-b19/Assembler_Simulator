@@ -1,4 +1,4 @@
-#have to check type D 
+#have to check "ld" in type D 
 import sys
 
 op_code = {
@@ -74,9 +74,9 @@ def execute(instruction,name,type):
   if type=="B":
     flag_to_zero()
     for x,y in reg.items():
-      if y==instruction[5:8]:
+      if y==instruction[6:9]:
         reg_name=x
-    imm=instruction[8::]
+    imm=instruction[9::]
     if name=="movb":
       initial_reg[reg_name]=bin_to_decimal(imm) 
     elif name=="rs":
@@ -84,20 +84,20 @@ def execute(instruction,name,type):
     elif name=="ls":
       initial_reg[reg_name]=initial_reg[reg_name] << bin_to_decimal(imm)
     print(initial_reg)
-    
-  if type=="D":  #to be checked
+
+  if type=="D":  
     flag_to_zero()
     for x,y in reg.items():
-        if y==instruction[5:8]:
+        if y==instruction[6:9]:
            reg_name=x
     if name=="st":
-      #  print(reg_name)
-      #  print("ttt",initial_reg[reg_name])
-      #  print("tt",memory[bin_to_decimal(instruction[8:16])])
-       memory[bin_to_decimal(instruction[8:16])]=dec_to_bin(initial_reg[reg_name]) 
-    if name=="ld":
-       initial_reg[reg_name]=bin_to_decimal(memory[bin_to_decimal(instruction[8:])])
-     
+      # print(reg_name)
+      memory[bin_to_decimal(instruction[9:15])]=dec_to_bin(initial_reg[reg_name])
+      print(initial_reg)
+    if name=="ld":    #to be checked
+      # print(reg_name)
+      initial_reg[reg_name] = bin_to_decimal(memory[bin_to_decimal(instruction[9:16])])
+      print(initial_reg)     
 
 #main
 memory=[]
