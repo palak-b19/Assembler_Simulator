@@ -1,3 +1,4 @@
+#have to check type D 
 import sys
 
 op_code = {
@@ -64,7 +65,10 @@ def bin_to_decimal(n):
   return int(n,2)
 def flag_to_zero():
   for x,y in initial_flags.items():
-     initial_flags[x]='0'   
+     initial_flags[x]='0' 
+def dec_to_bin(val):
+   binary = bin(int(val))
+   return ('0'*(16-len(binary)) + binary[2:])
 
 def execute(instruction,name,type):
   if type=="B":
@@ -75,12 +79,25 @@ def execute(instruction,name,type):
     imm=instruction[8::]
     if name=="movb":
       initial_reg[reg_name]=bin_to_decimal(imm) 
-    if name=="rs":
+    elif name=="rs":
       initial_reg[reg_name]=initial_reg[reg_name] >> bin_to_decimal(imm)
-    if name=="ls":
+    elif name=="ls":
       initial_reg[reg_name]=initial_reg[reg_name] << bin_to_decimal(imm)
-    print(initial_reg)          
-        
+    print(initial_reg)
+    
+  if type=="D":  #to be checked
+    flag_to_zero()
+    for x,y in reg.items():
+        if y==instruction[5:8]:
+           reg_name=x
+    if name=="st":
+      #  print(reg_name)
+      #  print("ttt",initial_reg[reg_name])
+      #  print("tt",memory[bin_to_decimal(instruction[8:16])])
+       memory[bin_to_decimal(instruction[8:16])]=dec_to_bin(initial_reg[reg_name]) 
+    if name=="ld":
+       initial_reg[reg_name]=bin_to_decimal(memory[bin_to_decimal(instruction[8:])])
+     
 
 #main
 memory=[]
