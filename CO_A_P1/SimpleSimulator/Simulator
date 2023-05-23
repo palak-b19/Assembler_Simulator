@@ -1,1 +1,115 @@
+import sys
 
+op_code = {
+  'add': '00000',
+  'sub': '00001',
+  'movb': '00010',
+  'movc': '00011',  
+  'ld': '00100',
+  'st': '00101',
+  'mul': '00110',
+  'div': '00111',
+  'rs': '01000',
+  'ls': '01001',
+  'xor': '01010',
+  'or': '01011',
+  'and': '01100',
+  'not': '01101',
+  'cmp': '01110',
+  'jmp': '01111',
+  'jlt': '11100',
+  'jgt': '11101',
+  'je': '11111',
+  'hlt': '11010'
+}
+
+op_type = {
+  "A": ['add', 'sub', 'mul', 'xor', 'or', 'and'],
+  "B": ['movb', 'rs', 'ls'],
+  "C": ['movc', 'div', 'not', 'cmp'],
+  "D": ['ld', 'st'],
+  "E": ['jmp', 'jlt', 'jgt', 'je'],
+  "F": ['hlt']
+}
+
+reg = {
+  'R0': '000',
+  'R1': '001',
+  'R2': '010',
+  'R3': '011',
+  'R4': '100',
+  'R5': '101',
+  'R6': '110',
+  'FLAGS': '111'
+}
+
+initial_flags={
+    'V':'0',
+    'L':'0',
+    'G':'0',
+    'E':'0'
+}
+
+initial_reg={
+    'R0':'0',
+    'R1': '0',
+    'R2': '0',
+    'R3': '0',
+    'R4': '0',
+    'R5': '0',
+    'R6': '0',
+}
+
+def bin_to_decimal(n):
+  return int(n,2)
+def flag_to_zero():
+  for x,y in initial_flags.items():
+     initial_flags[x]='0'   
+
+def execute(instruction,name,type):
+  if type=="B":
+    flag_to_zero()
+    for x,y in reg.items():
+      if y==instruction[5:8]:
+        reg_name=x
+    imm=instruction[8::]
+    if name=="movb":
+      initial_reg[reg_name]=bin_to_decimal(imm) 
+    if name=="rs":
+      initial_reg[reg_name]=initial_reg[reg_name] >> bin_to_decimal(imm)
+    if name=="ls":
+      initial_reg[reg_name]=initial_reg[reg_name] << bin_to_decimal(imm)
+    print(initial_reg)          
+        
+
+#main
+memory=[]
+f=open('binary.txt','r')
+file=f.read()
+lines=[x.rstrip() for x in file.split("\n")]
+print("lines",lines)
+memory.extend(lines)
+
+
+zeros='0'*16
+for i in range(len(lines),256):
+    memory.append(zeros)
+# print("memory",memory)
+
+PC=0
+halted=False
+
+# while (not halted):
+for i in range(len(lines)):
+    instruction=memory[PC]
+    for name,opcode in op_code.items():
+        if instruction[:5]==opcode:
+            inst_name=name
+            print("ins",name)
+    for type,list in op_type.items():
+        if inst_name in list:
+            inst_type=type
+            print("type",type)
+    execute(instruction,inst_name,inst_type)
+    PC+=1
+    # halted=True
