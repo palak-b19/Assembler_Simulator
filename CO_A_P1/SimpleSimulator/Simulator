@@ -71,19 +71,25 @@ def dec_to_bin(val):
    return ('0'*(16-len(binary)) + binary[2:])
 
 def execute(instruction,name,type):
+  global PC
   if type=="B":
     flag_to_zero()
     for x,y in reg.items():
       if y==instruction[6:9]:
         reg_name=x
+        # print("regname",reg_name)
     imm=instruction[9::]
     if name=="movb":
       initial_reg[reg_name]=bin_to_decimal(imm) 
+      PC+=1
     elif name=="rs":
       initial_reg[reg_name]=initial_reg[reg_name] >> bin_to_decimal(imm)
+      PC+=1
     elif name=="ls":
       initial_reg[reg_name]=initial_reg[reg_name] << bin_to_decimal(imm)
+      PC+=1
     print(initial_reg)
+    
 
   if type=="D":  
     flag_to_zero()
@@ -94,17 +100,54 @@ def execute(instruction,name,type):
       # print(reg_name)
       memory[bin_to_decimal(instruction[9:15])]=dec_to_bin(initial_reg[reg_name])
       print(initial_reg)
-    if name=="ld":    #to be checked
+      PC+=1
+    elif name=="ld":    #to be checked
       # print(reg_name)
       initial_reg[reg_name] = bin_to_decimal(memory[bin_to_decimal(instruction[9:16])])
-      print(initial_reg)     
+      print(initial_reg)  
+      PC+=1   
+
+  if type=="C":
+    for x,y in reg.items():
+      if y==instruction[10:13]:
+         reg1=x
+      if y==instruction[13::]:
+         reg2=x
+    if name=="movc":
+      #samajh nahi aaya
+      PC+=1 
+    elif name=="div":
+      flag_to_zero()
+      initial_reg['R0']=initial_reg[reg1]//initial_reg[reg2]
+      initial_reg['R1']=initial_reg[reg1]%initial_reg[reg2]
+      if (initial_reg[reg2])=='0':
+        initial_flags['V']='1'
+        initial_reg['R0']='0'
+        initial_reg['R1']='0'
+      PC+=1
+    elif name=="not":
+      flag_to_zero()
+      value=initial_reg[reg2]
+      value=bin_to_decimal(value)
+      initial_reg[reg1]=(~value)
+      PC+=1
+    elif name=="cmp":
+      flag_to_zero()
+      if (initial_reg[reg1]==initial_reg[reg2]):
+        initial_flags['E']='1'
+      elif (initial_reg[reg1]<initial_reg[reg2]):
+        initial_flags['L']='1'
+      elif (initial_reg[reg1]>initial_reg[reg2]):
+        initial_flags['G']='1'
+      PC+=1
+
 
 #main
 memory=[]
 f=open('binary.txt','r')
 file=f.read()
 lines=[x.rstrip() for x in file.split("\n")]
-print("lines",lines)
+# print("lines",lines)
 memory.extend(lines)
 
 
@@ -128,5 +171,4 @@ for i in range(len(lines)):
             inst_type=type
             print("type",type)
     execute(instruction,inst_name,inst_type)
-    PC+=1
     # halted=True
