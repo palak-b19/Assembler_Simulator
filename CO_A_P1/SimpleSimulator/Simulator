@@ -141,6 +141,29 @@ def execute(instruction,name,type):
       elif (initial_reg[reg1]>initial_reg[reg2]):
         initial_flags['G']='1'
       PC+=1
+  
+  if type=="A":
+    # print("...",initial_reg)
+    flag_to_zero()
+    for x,y in reg.items():
+      if y==instruction[7:10]:
+         reg1=x
+      if y==instruction[10:13]:
+         reg2=x
+      if y==instruction[13::]:
+         reg3=x
+    if name=="or":
+       initial_reg[reg1] = int(initial_reg[reg2]) | int(initial_reg[reg3])
+    if name=="and":
+       initial_reg[reg1] = int(initial_reg[reg2]) & int(initial_reg[reg3])
+    if name=="xor":
+       initial_reg[reg1] = int(initial_reg[reg2]) ^ int(initial_reg[reg3])
+    # print("...",initial_reg)
+       
+       
+
+
+     
 
 
 #main
