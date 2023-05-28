@@ -73,75 +73,6 @@ def dec_to_bin(val):
 
 def execute(instruction,name,type):
   global PC
-  if type=="B":
-    flag_to_zero()
-    for x,y in reg.items():
-      if y==instruction[6:9]:
-        reg_name=x
-        # print("regname",reg_name)
-    imm=instruction[9::]
-    if name=="movb":
-      initial_reg[reg_name]=bin_to_decimal(imm) 
-      PC+=1
-    elif name=="rs":
-      initial_reg[reg_name]=initial_reg[reg_name] >> bin_to_decimal(imm)
-      PC+=1
-    elif name=="ls":
-      initial_reg[reg_name]=initial_reg[reg_name] << bin_to_decimal(imm)
-      PC+=1
-    print(initial_reg)
-    
-
-  if type=="D":  
-    flag_to_zero()
-    for x,y in reg.items():
-        if y==instruction[6:9]:
-           reg_name=x
-    if name=="st":
-      # print(reg_name)
-      memory[bin_to_decimal(instruction[9:15])]=dec_to_bin(initial_reg[reg_name])
-      print(initial_reg)
-      PC+=1
-    elif name=="ld":    #to be checked
-      # print(reg_name)
-      initial_reg[reg_name] = bin_to_decimal(memory[bin_to_decimal(instruction[9:16])])
-      print(initial_reg)  
-      PC+=1   
-
-  if type=="C":
-    for x,y in reg.items():
-      if y==instruction[10:13]:
-         reg1=x
-      if y==instruction[13::]:
-         reg2=x
-    if name=="movc":
-      #samajh nahi aaya
-      PC+=1 
-    elif name=="div":
-      flag_to_zero()
-      initial_reg['R0']=initial_reg[reg1]//initial_reg[reg2]
-      initial_reg['R1']=initial_reg[reg1]%initial_reg[reg2]
-      if (initial_reg[reg2])=='0':
-        initial_flags['V']='1'
-        initial_reg['R0']='0'
-        initial_reg['R1']='0'
-      PC+=1
-    elif name=="not":
-      flag_to_zero()
-      value=initial_reg[reg2]
-      value=bin_to_decimal(value)
-      initial_reg[reg1]=(~value)
-      PC+=1
-    elif name=="cmp":
-      flag_to_zero()
-      if (initial_reg[reg1]==initial_reg[reg2]):
-        initial_flags['E']='1'
-      elif (initial_reg[reg1]<initial_reg[reg2]):
-        initial_flags['L']='1'
-      elif (initial_reg[reg1]>initial_reg[reg2]):
-        initial_flags['G']='1'
-      PC+=1
-  
   if type=="A":
     # print("...",initial_reg)
     flag_to_zero()
@@ -152,17 +83,100 @@ def execute(instruction,name,type):
          reg2=x
       if y==instruction[13::]:
          reg3=x
+    if name=="add":
+       if int(initial_reg[reg2]) + int(initial_reg[reg3]) > ((2**16)-1):
+          initial_reg[reg1] = (int(initial_reg[reg2]) + int(initial_reg[reg3]) % 2**16)
+          initial_flags['V']='1'
+       else:
+          initial_reg[reg1] =int(initial_reg[reg2]) + int(initial_reg[reg3])
+          
+    if name=="sub":
+       if int(initial_reg[reg2]) - int(initial_reg[reg3]) < 0:
+          initial_reg[reg1] = 0
+          initial_flags['V']='1'
+       else:
+          initial_reg[reg1] = int(initial_reg[reg2]) - int(initial_reg[reg3])
+    
+    if name=="mul":
+      if int(initial_reg[reg2]) * int(initial_reg[reg3]) > ((2**16)-1):
+          initial_reg[reg1] = ((int(initial_reg[reg2]) * int(initial_reg[reg3])) % 2**16)
+          initial_flags['V']='1'
+      else:
+          initial_reg[reg1] = int(initial_reg[reg2]) * int(initial_reg[reg3])
+
     if name=="or":
        initial_reg[reg1] = int(initial_reg[reg2]) | int(initial_reg[reg3])
     if name=="and":
        initial_reg[reg1] = int(initial_reg[reg2]) & int(initial_reg[reg3])
     if name=="xor":
-       initial_reg[reg1] = int(initial_reg[reg2]) ^ int(initial_reg[reg3])
+       initial_reg[reg1] = (int(initial_reg[reg2]) ^ int(initial_reg[reg3]))
     # print("...",initial_reg)
-       
-       
+  PC+=1
 
+  if type=="B":
+    flag_to_zero()
+    for x,y in reg.items():
+      if y==instruction[6:9]:
+        reg_name=x
+        # print("regname",reg_name)
+    imm=instruction[9::]
+    if name=="movb":
+      initial_reg[reg_name]=bin_to_decimal(imm) 
+    elif name=="rs":
+      initial_reg[reg_name]=initial_reg[reg_name] >> bin_to_decimal(imm)
+    elif name=="ls":
+      initial_reg[reg_name]=initial_reg[reg_name] << bin_to_decimal(imm)
+  PC+=1
+    # print(initial_reg)
+  
+  if type=="C":
+    for x,y in reg.items():
+      if y==instruction[10:13]:
+         reg1=x
+      if y==instruction[13::]:
+         reg2=x
+    if name=="movc":
+      #samajh nahi aaya
+      PC+=1
+    elif name=="div":
+      flag_to_zero()
+      initial_reg['R0']=initial_reg[reg1]//initial_reg[reg2]
+      initial_reg['R1']=initial_reg[reg1]%initial_reg[reg2]
+      if (initial_reg[reg2])=='0':
+        initial_flags['V']='1'
+        initial_reg['R0']='0'
+        initial_reg['R1']='0'
+    elif name=="not":
+      flag_to_zero()
+      value=initial_reg[reg2]
+      value=bin_to_decimal(value)
+      initial_reg[reg1]=(~value)
+    elif name=="cmp":
+      flag_to_zero()
+      if (initial_reg[reg1]==initial_reg[reg2]):
+        initial_flags['E']='1'
+      elif (initial_reg[reg1]<initial_reg[reg2]):
+        initial_flags['L']='1'
+      elif (initial_reg[reg1]>initial_reg[reg2]):
+        initial_flags['G']='1'
+  PC+=1
 
+  if type=="D":  
+    flag_to_zero()
+    for x,y in reg.items():
+        if y==instruction[6:9]:
+           reg_name=x
+    if name=="st":
+      # print(reg_name)
+      memory[bin_to_decimal(instruction[9:15])]=dec_to_bin(initial_reg[reg_name])
+      print(initial_reg)
+    elif name=="ld":    #to be checked
+      # print(reg_name)
+      initial_reg[reg_name] = bin_to_decimal(memory[bin_to_decimal(instruction[9:16])])
+      print(initial_reg)  
+  PC+=1   
+
+    
      
 
 
