@@ -222,23 +222,23 @@ def execute(instruction, name, type):
     #             PC += 1
     
     if type == "E":
-    if inst_name == 'jmp':
-        PC = bin_to_decimal(instruction[5:])
-    elif inst_name == 'jlt':
-        if initial_flags['L'] == '1':
+        if inst_name == 'jmp':
             PC = bin_to_decimal(instruction[5:])
-        else:
-            PC += 1
-    elif inst_name == 'jgt':
-        if initial_flags['G'] == '1':
-            PC = bin_to_decimal(instruction[5:])
-        else:
-            PC += 1
-    elif inst_name == 'je':
-        if initial_flags['E'] == '1':
-            PC = bin_to_decimal(instruction[5:])
-        else:
-            PC += 1
+        elif inst_name == 'jlt':
+            if initial_flags['L'] == '1':
+                PC = bin_to_decimal(instruction[5:])
+            else:
+                PC += 1
+        elif inst_name == 'jgt':
+            if initial_flags['G'] == '1':
+                PC = bin_to_decimal(instruction[5:])
+            else:
+                PC += 1
+        elif inst_name == 'je':
+            if initial_flags['E'] == '1':
+                PC = bin_to_decimal(instruction[5:])
+            else:
+                PC += 1
 
         
     print((dec_to_bin(PC))[-7:],initial_reg['R0'],initial_reg['R1'],initial_reg['R2'],initial_reg['R3'],initial_reg['R4'],initial_reg['R5'],initial_reg['R6'],initial_reg['FLAGS'])
@@ -276,4 +276,6 @@ for i in range(len(lines)):
     # halted=True
 for i in range(0,256):
     print(i,memory[i])
+
+
 
