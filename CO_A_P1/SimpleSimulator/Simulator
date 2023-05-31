@@ -240,6 +240,7 @@ def execute(instruction, name, type):
             else:
                 PC += 1
 
+# inst_name should be confirmed , check if it is a global variable name
         
     print((dec_to_bin(PC))[-7:],initial_reg['R0'],initial_reg['R1'],initial_reg['R2'],initial_reg['R3'],initial_reg['R4'],initial_reg['R5'],initial_reg['R6'],initial_reg['FLAGS'])
     PC += 1
