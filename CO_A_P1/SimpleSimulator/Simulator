@@ -221,8 +221,27 @@ def execute(instruction, name, type):
     #         else:
     #             PC += 1
     
-    if type == "E":
-        if inst_name == 'jmp':
+    #if type == "E":
+        #if inst_name == 'jmp':
+           3 PC = bin_to_decimal(instruction[-7:])
+       # elif inst_name == 'jlt':
+           # if initial_flags['L'] == '1':
+              #  PC = bin_to_decimal(instruction[-7:])
+           # else:
+              #  PC += 1
+        #elif inst_name == 'jgt':
+            #if initial_flags['G'] == '1':
+              #  PC = bin_to_decimal(instruction[-7:])
+         #   else:
+                #PC += 1
+      #  elif inst_name == 'je':
+           # if initial_flags['E'] == '1':
+               # PC = bin_to_decimal(instruction[-7:])
+          #  else:
+               # PC += 1
+
+
+ if inst_name == 'jmp':
             PC = bin_to_decimal(instruction[-7:])
         elif inst_name == 'jlt':
             if initial_flags['L'] == '1':
