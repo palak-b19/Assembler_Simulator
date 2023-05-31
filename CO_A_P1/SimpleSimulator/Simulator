@@ -81,12 +81,16 @@ def bin_to_decimal(n):
 def flag_to_zero():
     for x, y in initial_flags.items():
         initial_flags[x] = '0'
+        
+#checking if VLGE is zero 
 
 
 def dec_to_bin(val):
     binary = bin(int(val))
     return ('0' * (16 - len(binary)) + binary[2:])
 
+
+#printing dec to binary
 
 def execute(instruction, name, type):
     global PC
@@ -197,6 +201,46 @@ def execute(instruction, name, type):
             memory[bin_to_decimal(instruction[-7::])] = (initial_reg[reg_name]) # stores value in reg in memory at imm value index
         elif name == "ld":  #checked
             initial_reg[reg_name] = memory[bin_to_decimal(instruction[9:16])]
+    # if type=='E':
+    #     # execute(instruction, inst_name, inst_type)
+    #     if inst_name == 'jmp':
+    #         PC = bin_to_decimal(instruction[5:])
+    #     elif inst_name == 'jlt':
+    #         if initial_flags['L'] == '1':
+    #             PC = bin_to_decimal(instruction[5:])
+    #         else:
+    #             PC += 1
+    #     elif inst_name == 'jgt':
+    #         if initial_flags['G'] == '1':
+    #             PC = bin_to_decimal(instruction[5:])
+    #         else:
+    #             PC += 1
+    #     elif inst_name == 'je':
+    #         if initial_flags['E'] == '1':
+    #             PC = bin_to_decimal(instruction[5:])
+    #         else:
+    #             PC += 1
+    
+    if type == "E":
+    if inst_name == 'jmp':
+        PC = bin_to_decimal(instruction[5:])
+    elif inst_name == 'jlt':
+        if initial_flags['L'] == '1':
+            PC = bin_to_decimal(instruction[5:])
+        else:
+            PC += 1
+    elif inst_name == 'jgt':
+        if initial_flags['G'] == '1':
+            PC = bin_to_decimal(instruction[5:])
+        else:
+            PC += 1
+    elif inst_name == 'je':
+        if initial_flags['E'] == '1':
+            PC = bin_to_decimal(instruction[5:])
+        else:
+            PC += 1
+
+        
     print((dec_to_bin(PC))[-7:],initial_reg['R0'],initial_reg['R1'],initial_reg['R2'],initial_reg['R3'],initial_reg['R4'],initial_reg['R5'],initial_reg['R6'],initial_reg['FLAGS'])
     PC += 1
 
@@ -232,5 +276,4 @@ for i in range(len(lines)):
     # halted=True
 for i in range(0,256):
     print(i,memory[i])
-
 
