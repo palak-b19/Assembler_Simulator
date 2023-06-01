@@ -4,7 +4,7 @@ op_code = {
   'add': '00000',
   'sub': '00001',
   'movb': '00010',
-  'movc': '00011',  
+  'movc': '00011',
   'ld': '00100',
   'st': '00101',
   'mul': '00110',
@@ -208,8 +208,10 @@ def execute(i,instruction, name, type):
         if (name == 'je'and initial_reg['FLAGS'][-1] == '1') :
             i = bin_to_decimal(instruction[-7:])
 
-
-    print('i=',i-1,(dec_to_bin(PC))[-7:], initial_reg['R0'], initial_reg['R1'], initial_reg['R2'], initial_reg['R3'],initial_reg['R4'], initial_reg['R5'], initial_reg['R6'], initial_reg['FLAGS'])
+    if inst_name =='cmp':
+        print('i=',i-1,(dec_to_bin(PC))[-7:], initial_reg['R0'], initial_reg['R1'], initial_reg['R2'], initial_reg['R3'],initial_reg['R4'], initial_reg['R5'], initial_reg['R6'], initial_reg['FLAGS'])
+    else:
+        print('i=', i - 1, (dec_to_bin(PC))[-7:], initial_reg['R0'], initial_reg['R1'], initial_reg['R2'],initial_reg['R3'], initial_reg['R4'], initial_reg['R5'], initial_reg['R6'], '0'*16)
     PC += 1
     return i
 
