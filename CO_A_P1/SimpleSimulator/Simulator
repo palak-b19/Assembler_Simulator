@@ -1,26 +1,26 @@
 import sys
 
 op_code = {
-    'add': '10000',
-    'sub': '10001',
-    'movb': '10010',
-    'movc': '10011',
-    'ld': '10100',
-    'st': '10101',
-    'mul': '10110',
-    'div': '10111',
-    'rs': '11000',
-    'ls': '11001',
-    'xor': '11010',
-    'or': '11011',
-    'and': '11100',
-    'not': '11101',
-    'cmp': '11110',
-    'jmp': '11111',
-    'jlt': '01100',
-    'jgt': '01101',
-    'je': '01111',
-    'hlt': '01010'
+  'add': '00000',
+  'sub': '00001',
+  'movb': '00010',
+  'movc': '00011',  
+  'ld': '00100',
+  'st': '00101',
+  'mul': '00110',
+  'div': '00111',
+  'rs': '01000',
+  'ls': '01001',
+  'xor': '01010',
+  'or': '01011',
+  'and': '01100',
+  'not': '01101',
+  'cmp': '01110',
+  'jmp': '01111',
+  'jlt': '11100',
+  'jgt': '11101',
+  'je': '11111',
+  'hlt': '11010'
 }
 
 op_type = {
@@ -42,14 +42,14 @@ reg = {
     'R6': '110',
     'FLAGS': '111'
 }
-"""
-initial_flags = {
-    'V': '0',
-    'L': '0',
-    'G': '0',
-    'E': '0'
-}
-"""
+
+# initial_flags = {
+#     'V': '0',
+#     'L': '0',
+#     'G': '0',
+#     'E': '0'
+# }
+
 initial_reg1 = {
     'R0': '0',
     'R1': '0',
@@ -74,11 +74,11 @@ flagreg=['0']*16
 def bin_to_decimal(n):
     return int(n, 2)
 
-""""
-def flag_to_zero():
-    for x, y in initial_flags.items():
-        initial_flags[x] = '0'
-"""
+
+# def flag_to_zero():
+#     for x, y in initial_flags.items():
+#         initial_flags[x] = '0'
+
 def dec_to_bin(val):
     binary = bin(int(val))
     return ('0' * (16 - len(binary)) + binary[2:])
@@ -223,7 +223,7 @@ lines = [x.rstrip() for x in file.split("\n")]
 memory.extend(lines)
 
 zeros = '0' * 16
-for i in range(len(lines), 256):
+for i in range(len(lines), 128):
     memory.append(zeros)
 # print("memory",memory)
 
@@ -246,5 +246,5 @@ while (not halted):
     i=execute(i,instruction, inst_name, inst_type)
 
 
-for i in range(0,256):
+for i in range(0,128):
     print(i,memory[i])
