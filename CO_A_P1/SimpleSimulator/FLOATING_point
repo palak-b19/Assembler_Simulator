@@ -159,8 +159,40 @@ def execute(i, instruction, name, type):
         print("Invalid instruction type!")
 
     return i
-    
-    
+# main
+memory = []
+f = open('binary.txt', 'r')
+file = f.read()
+lines = [x.rstrip() for x in file.split("\n")]
+# print("lines",lines)
+memory.extend(lines)
+
+zeros = '0' * 16
+for i in range(len(lines), 128):
+    memory.append(zeros)
+# print("memory",memory)
+
+PC = 0
+halted = False
+i=0
+while (not halted):
+    instruction = lines[i]
+    for name, opcode in op_code.items():
+        if instruction[:5] == opcode:
+            inst_name = name
+            #print("ins", name)
+    for type, list in op_type.items():
+        if inst_name in list:
+            inst_type = type
+            #print("type", type)
+    print(inst_type, inst_name)
+    if inst_type=="F":
+        halted= True
+    i=execute(i,instruction, inst_name, inst_type)
+
+
+for i in range(0,128):
+    print(i,memory[i])
 
             
 
