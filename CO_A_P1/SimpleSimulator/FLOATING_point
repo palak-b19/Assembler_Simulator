@@ -1,0 +1,166 @@
+import sys
+
+op_code = {
+    'add': '00000',
+    'sub': '00001',
+    'movb': '00010',
+    'movc': '00011',
+    'ld': '00100',
+    'st': '00101',
+    'mul': '00110',
+    'div': '00111',
+    'rs': '01000',
+    'ls': '01001',
+    'xor': '01010',
+    'or': '01011',
+    'and': '01100',
+    'not': '01101',
+    'cmp': '01110',
+    'jmp': '01111',
+    'jlt': '11100',
+    'jgt': '11101',
+    'je': '11111',
+    'hlt': '11010',
+    'addf': '10000',
+    'subf': '10001',
+    'movf': '10010'
+}
+
+op_type = {
+    "A": ['add', 'sub', 'mul', 'xor', 'or', 'and'],
+    "B": ['movb', 'rs', 'ls'],
+    "C": ['movc', 'div', 'not', 'cmp'],
+    "D": ['ld', 'st'],
+    "E": ['jmp', 'jlt', 'jgt', 'je'],
+    "F": ['hlt', 'addf', 'subf', 'movf']
+}
+
+reg = {
+    'R0': '000',
+    'R1': '001',
+    'R2': '010',
+    'R3': '011',
+    'R4': '100',
+    'R5': '101',
+    'R6': '110',
+    'FLAGS': '111'
+}
+
+initial_reg = {
+    'R0': '0' * 16,
+    'R1': '0' * 16,
+    'R2': '0' * 16,
+    'R3': '0' * 16,
+    'R4': '0' * 16,
+    'R5': '0' * 16,
+    'R6': '0' * 16,
+    'FLAGS': '0' * 16,
+}
+
+flagreg = ['0'] * 16
+
+
+def bin_to_decimal(n):
+    return int(n, 2)
+
+
+def dec_to_bin(val):
+    binary = bin(int(val))
+    return ('0' * (16 - len(binary)) + binary[2:])
+
+
+def execute(i, instruction, name, type):
+    global PC
+    i += 1
+    if type == "A":
+        for x, y in reg.items():
+            if y == instruction[7:10]:
+                reg1 = x
+            if y == instruction[10:13]:
+                reg2 = x
+            if y == instruction[13:]:
+                reg3 = x
+        if name == "add":
+            if (bin_to_decimal(str(initial_reg[reg2])) + bin_to_decimal(str(initial_reg[reg3]))) > ((2 ** 16) - 1):
+                initial_reg[reg1] = (bin_to_decimal(str(initial_reg[reg2])) + bin_to_decimal(str(initial_reg[reg3]))) % (2 ** 16)
+                flagreg[-4] = '1'
+                initial_reg['FLAGS'] = "".join(flagreg)
+            else:
+                initial_reg[reg1] = dec_to_bin(int(initial_reg[reg2], 2) + int(initial_reg[reg3], 2))
+
+        if name == "sub":
+            if bin_to_decimal(bin(int(initial_reg[reg2], 2) - int(initial_reg[reg3], 2))) < 0:
+                initial_reg[reg1] = 0
+                flagreg[-4] = '1'
+                initial_reg['FLAGS'] = "".join(flagreg)
+            else:
+                initial_reg[reg1] = dec_to_bin(int(initial_reg[reg2], 2) - int(initial_reg[reg3], 2))
+
+        if name == "mul":
+            if int(initial_reg[reg2], 2) * int(initial_reg[reg3]) > ((2 ** 16) - 1):
+                initial_reg[reg1] = bin(int(initial_reg[reg2], 2) * int(initial_reg[reg3], 2)) % 2 ** 16
+                flagreg[-4] = '1'
+                initial_reg['FLAGS'] = "".join(flagreg)
+            else:
+                initial_reg[reg1] = bin(int(initial_reg[reg2], 2) * int(initial_reg[reg3], 2))
+
+        if name == "or":
+            initial_reg[reg1] = bin(int(initial_reg[reg2], 2) | int(initial_reg[reg3], 2))
+        if name == "and":
+            initial_reg[reg1] = bin(int(initial_reg[reg2], 2) & int(initial_reg[reg3], 2))
+        if name == "xor":
+            initial_reg[reg1] = bin(int(initial_reg[reg2], 2) ^ int(initial_reg[reg3], 2))
+
+    if type == "B":
+        for x, y in reg.items():
+            if y == instruction[6:9]:
+                reg_name = x
+        imm = instruction[9:]
+        if name == "movb":
+            initial_reg[reg_name] = '0' * 9 + imm
+        elif name == "rs":
+            initial_reg[reg_name] = initial_reg[reg_name] >> imm
+        elif name == "ls":
+            initial_reg[reg_name] = initial_reg[reg_name] << imm
+
+    if type == "C":
+        for x, y in reg.items():
+            if y == instruction[10:13]:
+                reg1 = x
+            if y == instruction[13:]:
+                reg2 = x
+        if name == "movc":
+            initial_reg[reg1] = initial_reg[reg2]
+        elif name == "div":
+            if int(initial_reg[reg2], 2) == 0:
+                print("Error: Division by zero!")
+            else:
+                initial_reg[reg1] = bin(int(initial_reg[reg1], 2) // int(initial_reg[reg2], 2))
+
+    if type == "D":
+        if name == "jmp":
+            PC = int(instruction[6:], 2)
+        elif name == "jz":
+            if flagreg[-4] == '1':
+                PC = int(instruction[6:], 2)
+        elif name == "jn":
+            if flagreg[-3] == '1':
+                PC = int(instruction[6:], 2)
+
+    if type == "E":
+        for x, y in reg.items():
+            if y == instruction[9:12]:
+                reg1 = x
+        imm = instruction[12:]
+        if name == "movi":
+            initial_reg[reg1] = '0' * 4 + imm
+
+    if type == "F":
+        print("Invalid instruction type!")
+
+    return i
+    
+    
+
+            
+
