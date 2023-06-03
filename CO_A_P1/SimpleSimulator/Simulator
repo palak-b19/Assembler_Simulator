@@ -86,7 +86,7 @@ def dec_to_bin(val):
 
 def execute(i,instruction, name, type):
     global PC
-    i+=1
+    flag=True
     if type == "A":
         #flag_to_zero()
         for x, y in reg.items():
@@ -199,21 +199,25 @@ def execute(i,instruction, name, type):
             initial_reg[reg_name] = memory[bin_to_decimal(instruction[9:16])]
     if type == 'E': #"E": ['jmp', 'jlt', 'jgt', 'je'],
         #flag_to_zero()
+        flag= False
         if name=='jmp':
-            i= bin_to_decimal(instruction[-7:])
+            i1= bin_to_decimal(instruction[-7:])
         elif (name == 'jlt' and initial_reg['FLAGS'][-3])=='1':
-            i = bin_to_decimal(instruction[-7:])
+            i1 = bin_to_decimal(instruction[-7:])
         elif (name == 'jgt' and initial_reg['FLAGS'][-2]) == '1':
-            i = bin_to_decimal(instruction[-7:])
+            i1 = bin_to_decimal(instruction[-7:])
+            print(i)
         if (name == 'je'and initial_reg['FLAGS'][-1] == '1') :
-            i = bin_to_decimal(instruction[-7:])
-
+            i1 = bin_to_decimal(instruction[-7:])
+    PC=str(i)
+    if not(flag):
+        i=i1-1
     if inst_name =='cmp':
-        print('i=',i-1,(dec_to_bin(PC))[-7:], initial_reg['R0'], initial_reg['R1'], initial_reg['R2'], initial_reg['R3'],initial_reg['R4'], initial_reg['R5'], initial_reg['R6'], initial_reg['FLAGS'])
+        print('i=',i,(dec_to_bin(PC))[-7:], initial_reg['R0'], initial_reg['R1'], initial_reg['R2'], initial_reg['R3'],initial_reg['R4'], initial_reg['R5'], initial_reg['R6'], initial_reg['FLAGS'])
     else:
-        print('i=', i - 1, (dec_to_bin(PC))[-7:], initial_reg['R0'], initial_reg['R1'], initial_reg['R2'],initial_reg['R3'], initial_reg['R4'], initial_reg['R5'], initial_reg['R6'], '0'*16)
-    PC += 1
-    return PC
+        print('i=', i , (dec_to_bin(PC))[-7:], initial_reg['R0'], initial_reg['R1'], initial_reg['R2'],initial_reg['R3'], initial_reg['R4'], initial_reg['R5'], initial_reg['R6'], '0'*16)
+    i+=1
+    return i
 
 
 # main
@@ -232,6 +236,7 @@ for i in range(len(lines), 128):
 PC = 0
 halted = False
 i=0
+
 while (not halted):
     instruction = lines[i]
     for name, opcode in op_code.items():
@@ -246,7 +251,6 @@ while (not halted):
     if inst_type=="F":
         halted= True
     i=execute(i,instruction, inst_name, inst_type)
-
 
 for i in range(0,128):
     print(i,memory[i])
