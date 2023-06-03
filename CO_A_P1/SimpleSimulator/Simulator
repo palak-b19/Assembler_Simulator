@@ -213,7 +213,7 @@ def execute(i,instruction, name, type):
     else:
         print('i=', i - 1, (dec_to_bin(PC))[-7:], initial_reg['R0'], initial_reg['R1'], initial_reg['R2'],initial_reg['R3'], initial_reg['R4'], initial_reg['R5'], initial_reg['R6'], '0'*16)
     PC += 1
-    return i
+    return PC
 
 
 # main
