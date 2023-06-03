@@ -27,12 +27,12 @@ op_code = {
 }
 
 op_type = {
-    "A": ['add', 'sub', 'mul', 'xor', 'or', 'and'],
-    "B": ['movb', 'rs', 'ls'],
+    "A": ['add', 'sub', 'mul', 'xor', 'or', 'and', 'addf', 'subf'],
+    "B": ['movb', 'rs', 'ls', 'movf'],
     "C": ['movc', 'div', 'not', 'cmp'],
     "D": ['ld', 'st'],
     "E": ['jmp', 'jlt', 'jgt', 'je'],
-    "F": ['hlt', 'addf', 'subf', 'movf']
+    "F": ['hlt']
 }
 
 reg = {
