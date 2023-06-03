@@ -118,7 +118,7 @@ def execute(i, instruction, name, type):
                 result = 0
                 flagreg[-4] = '1'
                 initial_reg['FLAGS'] = "".join(flagreg)
-           
+           #assumption_ kai basis mai result save
             fp_registers[fr1] = result
 
      
@@ -140,7 +140,7 @@ def execute(i, instruction, name, type):
                 result = 0
                 flagreg[-4] = '1'
                 initial_reg['FLAGS'] = "".join(flagreg)
-           
+           # change ---
             fp_registers[fr1] = result
                 
         # # Floating-point addition
@@ -168,6 +168,17 @@ def execute(i, instruction, name, type):
                 initial_reg['FLAGS'] = "".join(flagreg)
             else:
                 initial_reg[reg1] = dec_to_bin(int(initial_reg[reg2], 2) - int(initial_reg[reg3], 2))
+                   
+                   
+        if name == "movf":
+            for x, y in fp_registers.items():
+                if y == instruction[6:9]:
+                    fr1 = x
+            imm = instruction[9:]
+            # Store the immediate floating-point value in the floating-point register -- change karna
+            fp_registers[fr1] = imm
+                
+            
 
         if name == "mul":
             if int(initial_reg[reg2], 2) * int(initial_reg[reg3]) > ((2 ** 16) - 1):
@@ -269,6 +280,6 @@ while (not halted):
 for i in range(0,128):
     print(i,memory[i])
 
-            
+          
             
 
