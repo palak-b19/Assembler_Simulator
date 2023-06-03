@@ -136,6 +136,9 @@ def execute(i, instruction, name, type):
             
             result = float(fp_val1) - float(fp_val2)
             
+            
+            #flag_set_done 
+            
             if float(fp_val3) > float(fp_val2):
                 result = 0
                 flagreg[-4] = '1'
