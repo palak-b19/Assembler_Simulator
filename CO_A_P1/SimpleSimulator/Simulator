@@ -43,13 +43,6 @@ reg = {
     'FLAGS': '111'
 }
 
-# initial_flags = {
-#     'V': '0',
-#     'L': '0',
-#     'G': '0',
-#     'E': '0'
-# }
-
 initial_reg1 = {
     'R0': '0',
     'R1': '0',
@@ -75,20 +68,15 @@ def bin_to_decimal(n):
     return int(n, 2)
 
 
-# def flag_to_zero():
-#     for x, y in initial_flags.items():
-#         initial_flags[x] = '0'
-
 def dec_to_bin(val):
     binary = bin(int(val))
     return ('0' * (16 - len(binary)) + binary[2:])
 
 
 def execute(i,instruction, name, type):
-    global PC
+    global temp_i
     flag=True
     if type == "A":
-        #flag_to_zero()
         for x, y in reg.items():
             if y == instruction[7:10]:
                 reg1 = x
@@ -99,16 +87,14 @@ def execute(i,instruction, name, type):
         if name == "add":
             if (bin_to_decimal(str(initial_reg[reg2])) + bin_to_decimal(str(initial_reg[reg3]))) > ((2 ** 16) - 1):
                 initial_reg[reg1] = (bin_to_decimal(str(initial_reg[reg2])) + bin_to_decimal(str(initial_reg[reg3]))) % (2 ** 16)
-                #initial_flags['V'] = '1'
                 flagreg[-4] = '1'
                 initial_reg['FLAGS'] = "".join(flagreg)
-            else: #checked
+            else:
                 initial_reg[reg1] = dec_to_bin(int(initial_reg[reg2], 2) + int(initial_reg[reg3], 2))
 
         if name == "sub":
             if bin_to_decimal(bin(int(initial_reg[reg2], 2) - int(initial_reg[reg3], 2))) < 0:
                 initial_reg[reg1] = 0
-                #initial_flags['V'] = '1'
                 flagreg[-4] = '1'
                 initial_reg['FLAGS'] = "".join(flagreg)
             else:
@@ -117,7 +103,6 @@ def execute(i,instruction, name, type):
         if name == "mul":
             if int(initial_reg[reg2], 2) * int(initial_reg[reg3]) > ((2 ** 16) - 1):
                 initial_reg[reg1] = bin(int(initial_reg[reg2], 2) * int(initial_reg[reg3], 2)) % 2 ** 16
-                #initial_flags['V'] = '1'
                 flagreg[-4] = '1'
                 initial_reg['FLAGS'] = "".join(flagreg)
             else:
@@ -129,14 +114,12 @@ def execute(i,instruction, name, type):
             initial_reg[reg1] = bin(int(initial_reg[reg2], 2) & int(initial_reg[reg3], 2))
         if name == "xor":
             initial_reg[reg1] = bin(int(initial_reg[reg2], 2) ^ int(initial_reg[reg3], 2))
-        # print("...",initial_reg)
+
 
     if type == "B":
-        #flag_to_zero()
         for x, y in reg.items():
             if y == instruction[6:9]:
                 reg_name = x
-                # print("regname",reg_name)
         imm = instruction[9::]
         if name == "movb":   #checked
             initial_reg[reg_name] = '0'*9+ imm
@@ -145,7 +128,6 @@ def execute(i,instruction, name, type):
         elif name == "ls":
             initial_reg[reg_name] = initial_reg[reg_name] << imm
 
-    # print(initial_reg)
 
     if type == "C":
         for x, y in reg.items():
@@ -156,49 +138,39 @@ def execute(i,instruction, name, type):
         if name == "movc":
             initial_reg[reg1] = initial_reg[reg2]
         elif name == "div":
-            #flag_to_zero()
             initial_reg['R0'] = initial_reg[reg1] // initial_reg[reg2]
             initial_reg['R1'] = initial_reg[reg1] % initial_reg[reg2]
             if (initial_reg[reg2]) == '0':
-                #initial_flags['V'] = '1'
                 flagreg[-4]='1'
                 initial_reg['R0'] = '0'
                 initial_reg['R1'] = '0'
         elif name == "not":
-            #flag_to_zero()
             value = initial_reg[reg2]
             value = bin_to_decimal(value)
             initial_reg[reg1] = (~value)
         elif name == "cmp": #checked
-            #flag_to_zero()
             r1 = bin_to_decimal(initial_reg[reg1])
             r2 = bin_to_decimal(initial_reg[reg2])
             if (r1 == r2):
-                #initial_flags['E'] = '1'
                 flagreg[-1] = '1'
                 initial_reg['FLAGS'] = "".join(flagreg)
             elif (r1 < r2):
-                #initial_flags['L'] = '1'
                 flagreg[-3] = '1'
                 initial_reg['FLAGS'] = "".join(flagreg)
             elif (r1 > r2):
-                #initial_flags['G'] = '1'
                 flagreg[-2] = '1'
                 initial_reg['FLAGS'] = "".join(flagreg)
 
 
     if type == "D":
-        #flag_to_zero()
         for x, y in reg.items():
             if y == instruction[6:9]:
                 reg_name = x
         if name == "st": #checked
-            #print('here',bin_to_decimal(instruction[-7::]),instruction[-7::],reg_name)
             memory[bin_to_decimal(instruction[-7::])] = (initial_reg[reg_name]) # stores value in reg in memory at imm value index
         elif name == "ld":  #checked
             initial_reg[reg_name] = memory[bin_to_decimal(instruction[9:16])]
     if type == 'E': #"E": ['jmp', 'jlt', 'jgt', 'je'],
-        #flag_to_zero()
         flag= False
         if name=='jmp':
             i1= bin_to_decimal(instruction[-7:])
@@ -206,16 +178,19 @@ def execute(i,instruction, name, type):
             i1 = bin_to_decimal(instruction[-7:])
         elif (name == 'jgt' and initial_reg['FLAGS'][-2]) == '1':
             i1 = bin_to_decimal(instruction[-7:])
-            print(i)
         if (name == 'je'and initial_reg['FLAGS'][-1] == '1') :
             i1 = bin_to_decimal(instruction[-7:])
-    PC=str(i)
+    temp_i=str(i)
     if not(flag):
-        i=i1-1
+        try:
+            i=i1-1
+            flag = not flag
+        except:
+            pass
     if inst_name =='cmp':
-        print('i=',i,(dec_to_bin(PC))[-7:], initial_reg['R0'], initial_reg['R1'], initial_reg['R2'], initial_reg['R3'],initial_reg['R4'], initial_reg['R5'], initial_reg['R6'], initial_reg['FLAGS'])
+        print((dec_to_bin(temp_i))[-7:], initial_reg['R0'], initial_reg['R1'], initial_reg['R2'], initial_reg['R3'],initial_reg['R4'], initial_reg['R5'], initial_reg['R6'], initial_reg['FLAGS'])
     else:
-        print('i=', i , (dec_to_bin(PC))[-7:], initial_reg['R0'], initial_reg['R1'], initial_reg['R2'],initial_reg['R3'], initial_reg['R4'], initial_reg['R5'], initial_reg['R6'], '0'*16)
+        print((dec_to_bin(temp_i))[-7:], initial_reg['R0'], initial_reg['R1'], initial_reg['R2'],initial_reg['R3'], initial_reg['R4'], initial_reg['R5'], initial_reg['R6'], '0'*16)
     i+=1
     return i
 
@@ -225,15 +200,13 @@ memory = []
 f = open('binary.txt', 'r')
 file = f.read()
 lines = [x.rstrip() for x in file.split("\n")]
-# print("lines",lines)
 memory.extend(lines)
 
 zeros = '0' * 16
 for i in range(len(lines), 128):
     memory.append(zeros)
-# print("memory",memory)
 
-PC = 0
+temp_i=0
 halted = False
 i=0
 
@@ -242,11 +215,9 @@ while (not halted):
     for name, opcode in op_code.items():
         if instruction[:5] == opcode:
             inst_name = name
-            #print("ins", name)
     for type, list in op_type.items():
         if inst_name in list:
             inst_type = type
-            #print("type", type)
     print(inst_type, inst_name)
     if inst_type=="F":
         halted= True
