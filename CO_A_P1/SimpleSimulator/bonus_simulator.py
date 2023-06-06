@@ -21,7 +21,9 @@ op_code = {
   'jgt': '11101',
   'je': '11111',
   'hlt': '11010', #ok
-  'clear':'10011' 
+  'clear':'10011',
+  'incr':'11000',
+  'decr':'10110'
 }
 
 op_type = {
@@ -31,7 +33,7 @@ op_type = {
     "D": ['ld', 'st'],
     "E": ['jmp', 'jlt', 'jgt', 'je'],
     "F": ['hlt'],
-    "G" : ['clear']
+    "G" : ['clear','incr','decr']
 }
 
 reg = {
@@ -192,6 +194,17 @@ def execute(i,instruction, name, type):
             initial_reg[reg_name]='0'*16
         if name == "set":
             initial_reg[reg_name]='1'*16
+        val= bin_to_decimal(initial_reg.get(reg_name))
+        if name=="incr":
+            if val<=127:
+                initial_reg[reg_name]= dec_to_bin(str(val + 1))
+            else:
+                pass
+        elif name=="decr":
+            if val<=0:
+                initial_reg[reg_name]= dec_to_bin(str(val-1))
+            else:
+                pass
                 
     temp_i=str(i)
     if not(flag):
