@@ -391,8 +391,7 @@ while True:
   line=sys.stdin.readline().strip()
   if not line:
     break
-  page+="\n"
-  page+=line
+  page+=line + "\n"
 #page = sys.stdin.read()
 
 all_instructions = [x.lstrip().rstrip() for x in page.split('\n') if x != ""]
