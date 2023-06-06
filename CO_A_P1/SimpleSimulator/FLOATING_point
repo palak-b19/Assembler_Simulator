@@ -28,7 +28,7 @@ op_code = {
 
 op_type = {
     "A": ['add', 'sub', 'mul', 'xor', 'or', 'and', 'addf', 'subf'],
-    "B": ['movb', 'rs', 'ls','movf'],
+    "B": ['movb', 'rs', 'ls', 'movf'],
     "C": ['movc', 'div', 'not', 'cmp'],
     "D": ['ld', 'st'],
     "E": ['jmp', 'jlt', 'jgt', 'je'],
@@ -57,17 +57,17 @@ initial_reg = {
     'FLAGS': '0' * 16,
 }
 
-fp_reg = {
+fp_registers = {
     'FR0': '0' * 8,
     'FR1': '0' * 8,
     'FR2': '0' * 8,
     'FR3': '0' * 8,
     'FR4': '0' * 8,
-    'FR5':'0' * 8,
-    'FR6':'0' * 8
+    'FR5': '0' * 8,
+    'FR6': '0' * 8
 }
-
-
+for x, y in fp_registers.items():
+    print(x, y)
 flagreg = ['0'] * 16
 
 
@@ -78,6 +78,15 @@ def bin_to_decimal(n):
 def dec_to_bin(val):
     binary = bin(int(val))
     return ('0' * (16 - len(binary)) + binary[2:])
+
+def binf_to_dec(n):
+    mantissa=n[3:]
+    exponent= bin_to_decimal(n[:3]) - 3
+    mantissa= float(n,2)
+
+
+
+
 
 
 def execute(i, instruction, name, type):
@@ -93,76 +102,56 @@ def execute(i, instruction, name, type):
                 reg3 = x
         if name == "add":
             if (bin_to_decimal(str(initial_reg[reg2])) + bin_to_decimal(str(initial_reg[reg3]))) > ((2 ** 16) - 1):
-                initial_reg[reg1] = (bin_to_decimal(str(initial_reg[reg2])) + bin_to_decimal(str(initial_reg[reg3]))) % (2 ** 16)
+                initial_reg[reg1] = (bin_to_decimal(str(initial_reg[reg2])) + bin_to_decimal(
+                    str(initial_reg[reg3]))) % (2 ** 16)
                 flagreg[-4] = '1'
                 initial_reg['FLAGS'] = "".join(flagreg)
             else:
                 initial_reg[reg1] = dec_to_bin(int(initial_reg[reg2], 2) + int(initial_reg[reg3], 2))
-                
-         elif name == "addf":
-            for x, y in fp_registers.items():
-                # assign kardia reg name according to instruction
+
+        elif name == "addf":
+            for x, y in reg.items():
+                print(x,y)
+                # assign kardia reg name according to instruction #wrong dict used
                 if y == instruction[7:10]:
                     fr1 = x
                 if y == instruction[10:13]:
                     fr2 = x
                 if y == instruction[13:]:
                     fr3 = x
-            
-            fp_val1 = fp_registers[fr2]
-            fp_val2 = fp_registers[fr3]
-            
-            result = float(fp_val1) + float(fp_val2)
-            
-            if result > (2 ** 8 - 1):
+            fp_val2 = initial_reg[fr2]
+            fp_val3 = initial_reg[fr3]
+
+            result = binf_to_dec(fp_val2) + binf_to_dec(fp_val3)
+
+            if result > (2 ** 8 - 1): #confirm with aarzoo
                 result = 0
                 flagreg[-4] = '1'
                 initial_reg['FLAGS'] = "".join(flagreg)
-           #assumption_ kai basis mai result save
             fp_registers[fr1] = result
 
-     
+
         elif name == "subf":
-            for x, y in fp_registers.items():
+            for x, y in reg.items():
+                print(x, y)
+                # assign kardia reg name according to instruction #wrong dict used
                 if y == instruction[7:10]:
                     fr1 = x
                 if y == instruction[10:13]:
                     fr2 = x
                 if y == instruction[13:]:
                     fr3 = x
-           
-            fp_val1 = fp_registers[fr2]
-            fp_val2 = fp_registers[fr3]
-            
-            result = float(fp_val1) - float(fp_val2)
-            
-            
-            #flag_set_done 
-            
-            if float(fp_val3) > float(fp_val2):
+            fp_val2 = initial_reg[fr2]
+            fp_val3 = initial_reg[fr3]
+
+            result = binf_to_dec(fp_val2) - binf_to_dec(fp_val3)
+
+            if result<0:
                 result = 0
                 flagreg[-4] = '1'
                 initial_reg['FLAGS'] = "".join(flagreg)
-           # change ---
             fp_registers[fr1] = result
-                
-        # # Floating-point addition
-        # if name == "addf":
-        #     if (bin_to_decimal(initial_reg[reg2]) + bin_to_decimal(initial_reg[reg3])) > ((2 ** 8) - 1):
-        #         initial_reg[reg1] = '0' * 8
-        #         flagreg[-4] = '1'
-        #         initial_reg['FLAGS'] = "".join(flagreg)
-        #     else:
-        #         initial_reg[reg1] = dec_to_bin(int(initial_reg[reg2], 2) + int(initial_reg[reg3], 2))
 
-        # # Floating-point subtraction
-        # if name == "subf":
-        #     if bin_to_decimal(bin(int(initial_reg[reg2], 2) - int(initial_reg[reg3], 2))) < 0:
-        #         initial_reg[reg1] = '0' * 8
-        #         flagreg[-4] = '1'
-        #         initial_reg['FLAGS'] = "".join(flagreg)
-        #     else:
-        #         initial_reg[reg1] = dec_to_bin(int(initial_reg[reg2], 2) - int(initial_reg[reg3], 2))
 
         if name == "sub":
             if bin_to_decimal(bin(int(initial_reg[reg2], 2) - int(initial_reg[reg3], 2))) < 0:
@@ -171,17 +160,7 @@ def execute(i, instruction, name, type):
                 initial_reg['FLAGS'] = "".join(flagreg)
             else:
                 initial_reg[reg1] = dec_to_bin(int(initial_reg[reg2], 2) - int(initial_reg[reg3], 2))
-                   
-                   
-        if name == "movf":
-            for x, y in fp_registers.items():
-                if y == instruction[6:9]:
-                    fr1 = x
-            imm = instruction[9:]
-            # Store the immediate floating-point value in the floating-point register -- change karna
-            fp_registers[fr1] = imm
-                
-            
+
 
         if name == "mul":
             if int(initial_reg[reg2], 2) * int(initial_reg[reg3]) > ((2 ** 16) - 1):
@@ -207,6 +186,11 @@ def execute(i, instruction, name, type):
             initial_reg[reg_name] = '0' * 9 + imm
         elif name == "movf":
             initial_reg[reg_name] = '0' * 4 + imm
+        elif name == "movf":
+            for x, y in reg.items():
+                if y == instruction[6:9]:
+                    fr1 = x
+            fp_registers[fr1] = binf_to_dec(instruction[9:])
         elif name == "rs":
             initial_reg[reg_name] = initial_reg[reg_name] >> imm
         elif name == "ls":
@@ -248,6 +232,8 @@ def execute(i, instruction, name, type):
         print("Invalid instruction type!")
 
     return i
+
+
 # main
 memory = []
 f = open('binary.txt', 'r')
@@ -263,26 +249,24 @@ for i in range(len(lines), 128):
 
 PC = 0
 halted = False
-i=0
+i = 0
 while (not halted):
     instruction = lines[i]
     for name, opcode in op_code.items():
         if instruction[:5] == opcode:
             inst_name = name
-            #print("ins", name)
+            # print("ins", name)
     for type, list in op_type.items():
         if inst_name in list:
             inst_type = type
-            #print("type", type)
+            # print("type", type)
     print(inst_type, inst_name)
-    if inst_type=="F":
-        halted= True
-    i=execute(i,instruction, inst_name, inst_type)
+    if inst_type == "F":
+        halted = True
+    i = execute(i, instruction, inst_name, inst_type)
+
+for i in range(0, 128):
+    print(i, memory[i])
 
 
-for i in range(0,128):
-    print(i,memory[i])
-
-          
-            
 
