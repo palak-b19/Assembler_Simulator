@@ -3,10 +3,10 @@ import sys
 op_code = {
   'add': '00000',
   'sub': '00001',
-  'movb': '00010',
+  'movb': '00010', #ok
   'movc': '00011',
   'ld': '00100',
-  'st': '00101',
+  'st': '00101', #ok
   'mul': '00110',
   'div': '00111',
   'rs': '01000',
@@ -20,7 +20,7 @@ op_code = {
   'jlt': '11100',
   'jgt': '11101',
   'je': '11111',
-  'hlt': '11010'
+  'hlt': '11010' #ok
 }
 
 op_type = {
@@ -69,8 +69,9 @@ def bin_to_decimal(n):
 
 
 def dec_to_bin(val):
-    binary = bin(int(val))
-    return ('0' * (16 - len(binary)) + binary[2:])
+    binary = bin(int(val))[2:]
+    c=('0' * (16 - len(binary)) + binary)
+    return ('0' * (16 - len(binary)) + binary)
 
 
 def execute(i,instruction, name, type):
@@ -91,6 +92,7 @@ def execute(i,instruction, name, type):
                 initial_reg['FLAGS'] = "".join(flagreg)
             else:
                 initial_reg[reg1] = dec_to_bin(int(initial_reg[reg2], 2) + int(initial_reg[reg3], 2))
+
 
         if name == "sub":
             if bin_to_decimal(bin(int(initial_reg[reg2], 2) - int(initial_reg[reg3], 2))) < 0:
@@ -188,20 +190,25 @@ def execute(i,instruction, name, type):
         except:
             pass
     if inst_name =='cmp':
-        print((dec_to_bin(temp_i))[-7:], initial_reg['R0'], initial_reg['R1'], initial_reg['R2'], initial_reg['R3'],initial_reg['R4'], initial_reg['R5'], initial_reg['R6'], initial_reg['FLAGS'])
+        print((dec_to_bin(temp_i))[-7:],"      " ,initial_reg['R0'], initial_reg['R1'], initial_reg['R2'], initial_reg['R3'],initial_reg['R4'], initial_reg['R5'], initial_reg['R6'], initial_reg['FLAGS'])
     else:
-        print((dec_to_bin(temp_i))[-7:], initial_reg['R0'], initial_reg['R1'], initial_reg['R2'],initial_reg['R3'], initial_reg['R4'], initial_reg['R5'], initial_reg['R6'], '0'*16)
+        print((dec_to_bin(temp_i))[-7:],"      "  ,initial_reg['R0'], initial_reg['R1'], initial_reg['R2'],initial_reg['R3'], initial_reg['R4'], initial_reg['R5'], initial_reg['R6'], '0'*16)
     i+=1
     return i
 
-
 # main
 memory = []
-f = open('binary.txt', 'r')
-file = f.read()
-lines = [x.rstrip() for x in file.split("\n")]
-memory.extend(lines)
+file = ""
+line = ""
 
+while True:
+    line = sys.stdin.readline().strip()
+    if not line:
+        break
+    file += line + "\n"
+
+lines = [x.rstrip().lstrip() for x in file.split("\n") if x!='']
+memory.extend(lines)
 zeros = '0' * 16
 for i in range(len(lines), 128):
     memory.append(zeros)
@@ -218,10 +225,12 @@ while (not halted):
     for type, list in op_type.items():
         if inst_name in list:
             inst_type = type
-    print(inst_type, inst_name)
+    #print(inst_type, inst_name)
     if inst_type=="F":
         halted= True
     i=execute(i,instruction, inst_name, inst_type)
 
 for i in range(0,128):
-    print(i,memory[i])
+    print(memory[i])
+
+
