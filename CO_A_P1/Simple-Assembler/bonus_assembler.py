@@ -38,7 +38,7 @@ op_type = {
   "D": ['ld', 'st'],
   "E": ['jmp', 'jlt', 'jgt', 'je'],
   "F": ['hlt'],
-  "G":['clear','incr','decr']
+  "G":['clear','incr','decr','set']
 }
 reg = {
   'R0': '000',
@@ -508,7 +508,6 @@ def type_G(lst):
   opcode=lst[0]
   reg_nam=lst[1]  
   return op_code.get(opcode) + '00000000'+ reg.get(reg_nam) + '\n'
-
 
 
 def print_binary():
