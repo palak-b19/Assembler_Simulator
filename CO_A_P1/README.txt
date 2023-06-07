@@ -9,7 +9,8 @@ Uses:
     * Incr and Decr can be used for iterating within a loop or as a circular buffer.
     * Clear and Set can be used to reset a flag or to initial variables in nested loops.
 
-Sample test case:
+Sample test case 1:
+Assembler:
 mov R1 $0
 mov R2 $3
 incr R1
@@ -19,3 +20,15 @@ swap R3 R1
 
 set R5
 hlt
+Simulator:
+0001000010000000
+0001000100000111
+1100000000000001
+1100000000000010
+1011000000000011
+1010100000011001
+1001100000000101
+1101000000000000
+
+
+
