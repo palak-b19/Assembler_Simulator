@@ -5,11 +5,14 @@
 Course: CSE112
 Course Title: Computer Organisation
 
-Palak Bhardwaj(2022344)
-Suhani Kalyani(2022511)
-Vanshika Pal(2022560)
-Nandini Jain(2022316)
+`PROJECT MEMBERS`
 
+| Name             | Student ID |
+|------------------|------------|
+| Palak Bhardwaj   | 2022344    |
+| Suhani Kalyani   | 2022511    |
+| Vanshika Pal     | 2022560    |
+| Nandini Jain     | 2022316    |
 
 # Path To Run Assembler
  - CO-project -> CO_A_P1 -> Simple-Assembler -> Assembler.py
