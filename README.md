@@ -23,8 +23,8 @@ This project provides a simple simulator and assembler for a custom assembly lan
  - CO-project -> CO_A_P1 -> Simulator -> Simple-Assembler -> Assembler.py
 
 
-# Path To Run Assembler
- - CO-project -> CO_A_P1 -> Simulator -> Simple-Assembler -> Assembler.py
+# Path To Run Simulator
+ - CO-project -> CO_A_P1 -> Simulator -> SimpleSimulator -> Assembler.py
 
 
 # HOW TO EVALUATE
