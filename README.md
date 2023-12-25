@@ -19,8 +19,6 @@ Nandini Jain(2022316)
 
 In terminal, go to automatedTesting directory and enter `./run``. A complete report sheet will be generated in the terminal
 
-For Only Assembler
-In terminal, go to automatedTesting directory and enter `./run --no-sim`. A complete report sheet will be generated in the terminal
 
 # To view all changes and history view Old_Assembler 
 
@@ -151,6 +149,87 @@ hlt
 
 This example code declares a variable `X`, moves its value to `R1`, adds the values in `R1` and `R3` and loads the value of `X` into `R4`, finally halting the program.
 
+# Assembly Simulator
+
+A simple assembly simulator that executes instructions and updates the register and memory accordingly.
+
+## Instruction Set
+
+### Operation Codes (op_code)
+- **add:** '00000'
+- **sub:** '00001'
+- **movb:** '00010'
+- **movc:** '00011'
+- **ld:** '00100'
+- **st:** '00101'
+- **mul:** '00110'
+- **div:** '00111'
+- **rs:** '01000'
+- **ls:** '01001'
+- **xor:** '01010'
+- **or:** '01011'
+- **and:** '01100'
+- **not:** '01101'
+- **cmp:** '01110'
+- **jmp:** '01111'
+- **jlt:** '11100'
+- **jgt:** '11101'
+- **je:** '11111'
+- **hlt:** '11010'
+
+### Operation Types (op_type)
+- **A:** add, sub, mul, xor, or, and
+- **B:** movb, rs, ls
+- **C:** movc, div, not, cmp
+- **D:** ld, st
+- **E:** jmp, jlt, jgt, je
+- **F:** hlt
+
+### Registers (reg)
+- **R0:** '000'
+- **R1:** '001'
+- **R2:** '010'
+- **R3:** '011'
+- **R4:** '100'
+- **R5:** '101'
+- **R6:** '110'
+- **FLAGS:** '111'
+
+### Initial Register Values (initial_reg)
+```python
+{
+    'R0': '0' * 16,
+    'R1': '0' * 16,
+    'R2': '0' * 16,
+    'R3': '0' * 16,
+    'R4': '0' * 16,
+    'R5': '0' * 16,
+    'R6': '0' * 16,
+    'FLAGS': '0' * 16,
+}
+```
+
+## Usage
+
+1. Input your assembly code into the simulator.
+2. Run the simulator to execute the instructions.
+3. View the updated register and memory values after execution.
+
+## Example
+
+```python
+# Example Assembly Code
+ld 00000001 00000100
+add 00000100 00000101 00000110
+st 00000010 00000110
+hlt
+```
+
+## Simulator Execution
+
+```bash
+$ python simulator.py
+```
 
 
 ## License
