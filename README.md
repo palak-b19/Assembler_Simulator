@@ -1,6 +1,7 @@
-# Computer Organisation Project
 
 # ASSEMBLER SIMULATOR PROJECT
+
+This project provides a simple simulator and assembler for a custom assembly language, allowing to understand and experiment with the fundamentals of computer organization.
 
 `COURSE OVERVIEW`
 
