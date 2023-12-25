@@ -20,7 +20,11 @@ This project provides a simple simulator and assembler for a custom assembly lan
 | Nandini Jain     | 2022316    |
 
 # Path To Run Assembler
- - CO-project -> CO_A_P1 -> Simple-Assembler -> Assembler.py
+ - CO-project -> CO_A_P1 -> Simulator -> Simple-Assembler -> Assembler.py
+
+
+# Path To Run Assembler
+ - CO-project -> CO_A_P1 -> Simulator -> Simple-Assembler -> Assembler.py
 
 
 # HOW TO EVALUATE
