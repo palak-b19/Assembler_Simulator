@@ -2,8 +2,12 @@
 
 # ASSEMBLER SIMULATOR PROJECT
 
-Course: CSE112
-Course Title: Computer Organisation
+
+| Field           | Value              |
+| --------------- | ------------------ |
+| Course          | CSE112             |
+| Course Title    | Computer Organisation |
+| Instructor      | Tammam Tillo - https://www.iiitd.ac.in/tammam  |
 
 `PROJECT MEMBERS`
 
