@@ -3,7 +3,7 @@
 # ASSEMBLER SIMULATOR PROJECT
 
 
-| Field           | Value              |
+
 | --------------- | ------------------ |
 | Course          | CSE112             |
 | Course Title    | Computer Organisation |
