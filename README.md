@@ -1,5 +1,7 @@
 # Computer Organisation Project
 
+# ASSEMBLER SIMULATOR PROJECT
+
 Course: CSE112
 Course Title: Computer Organisation
 
@@ -9,22 +11,22 @@ Vanshika Pal(2022560)
 Nandini Jain(2022316)
 
 
-### Path To Run Assembler
+# Path To Run Assembler
  - CO-project -> CO_A_P1 -> Simple-Assembler -> Assembler.py
 
 
-#### HOW TO EVALUATE
+# HOW TO EVALUATE
 
 In terminal, go to automatedTesting directory and enter `./run``. A complete report sheet will be generated in the terminal
 
 For Only Assembler
 In terminal, go to automatedTesting directory and enter `./run --no-sim`. A complete report sheet will be generated in the terminal
 
-#### To view all changes and history view Old_Assembler 
+# To view all changes and history view Old_Assembler 
 
- ### ASSUMPTIONS:
+ # ASSUMPTIONS:
   
-  - Label type instruction: only 1 label declaration per line i.e, ":"occurs only once.
+  - `Label type instruction`: only 1 label declaration per line i.e, ":"occurs only once.
   
   - `Mov R1 FLAGS` is taken to be a valid command since FLAGS doesn't represent a variable but instead represents a valid register name , where 
   - MOV can be used with two types of instructions , type1- mov register value , mov reg1 reg2 , hence we have taken to be a valid name
@@ -32,9 +34,28 @@ In terminal, go to automatedTesting directory and enter `./run --no-sim`. A comp
     - `FLAGS` is a valid register name
     - `mov reg1 FLAGS` is the only valid  instruction involving FLAG register.
 
+# Project Overview
 
+`automatedTesting`: This folder contains
 
+the sample test cases provided by the evaluator: tests/
+the grading script: src
+the run file: run
 
+`Simple-Assembler`: This folder contains
+
+Python programme which gives stdin and stdout and is used for automated testing:- main.py
+Python programme that reads from read.txt and writes output in write.txt:- readable.py
+Python programme that contains basic decimal-binary conversion functions which are used at many instances in the assembler:- CONVERTME.py
+
+`SimpleSimulator`: This folder contains
+
+Python program which takes the binary output from Simple-Assembler/main.py and contains the main programme for execution of each instruction in class ee (execution engine) and the flow of simulator execution and gives the required output in stdout:- main.py
+MEM.py contains the class for program memory and all the memory functions required
+RF.py contains the class for register data and all the register accessing function required
+PC.py contains the class for program counter and all the program counter operations required
+opcodes.py contains all the dictionaries for opcodes and registers and their binary address equivalents
+Python programme that contains basic decimal-binary conversion functions which are used at many instances in the simulator:- CONVERTME.py
 
 # Assembly Language Compiler
 
@@ -129,6 +150,8 @@ hlt
 ```
 
 This example code declares a variable `X`, moves its value to `R1`, adds the values in `R1` and `R3` and loads the value of `X` into `R4`, finally halting the program.
+
+
 
 ## License
 
