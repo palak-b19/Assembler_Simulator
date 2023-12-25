@@ -20,26 +20,26 @@ This project provides a simple simulator and assembler for a custom assembly lan
 | Nandini Jain     | 2022316    |
 
 # Path To Run Assembler
- - CO-project -> CO_A_P1 -> Simulator -> Simple-Assembler -> Assembler.py
+ - CO-project -> CO_A_P1 -> Simulator -> Simple-Assembler -> bonus_ssembler.py
 
 
 # Path To Run Simulator
- - CO-project -> CO_A_P1 -> Simulator -> SimpleSimulator -> Assembler.py
+ - CO-project -> CO_A_P1 -> Simulator -> SimpleSimulator -> bonus_simulator.py
 
 
 # HOW TO EVALUATE
 
-In terminal, go to automatedTesting directory and enter `./run``. A complete report sheet will be generated in the terminal
+In the terminal, go to the automated testing directory and enter `./run``. A complete report sheet will be generated in the terminal
 
 
 # To view all changes and history view Old_Assembler 
 
  # ASSUMPTIONS:
   
-  - `Label type instruction`: only 1 label declaration per line i.e, ":"occurs only once.
+  - `Label type instruction`: only 1 label declaration per line i.e., ":"occurs only once.
   
   - `Mov R1 FLAGS` is taken to be a valid command since FLAGS doesn't represent a variable but instead represents a valid register name , where 
-  - MOV can be used with two types of instructions , type1- mov register value , mov reg1 reg2 , hence we have taken to be a valid name
+  - MOV can be used with two types of instructions, type1- mov register value , mov reg1 reg2 , hence we have taken to be a valid name
   - Use of FLAG register:
     - `FLAGS` is a valid register name
     - `mov reg1 FLAGS` is the only valid  instruction involving FLAG register.
@@ -54,22 +54,22 @@ the run file: run
 
 `Simple-Assembler`: This folder contains
 
-Python programme which gives stdin and stdout and is used for automated testing:- main.py
-Python programme that reads from read.txt and writes output in write.txt:- readable.py
-Python programme that contains basic decimal-binary conversion functions which are used at many instances in the assembler:- CONVERTME.py
+Python program which gives stdin and stdout and is used for automated testing:- main.py
+Python program that reads from read.txt and writes output in write.txt:- readable.py
+Python program that contains basic decimal-binary conversion functions which are used at many instances in the assembler:- CONVERTME.py
 
 `SimpleSimulator`: This folder contains
 
 Python program which takes the binary output from Simple-Assembler/main.py and contains the main programme for execution of each instruction in class ee (execution engine) and the flow of simulator execution and gives the required output in stdout:- main.py
 MEM.py contains the class for program memory and all the memory functions required
-RF.py contains the class for register data and all the register accessing function required
-PC.py contains the class for program counter and all the program counter operations required
+RF.py contains the class for register data and all the register accessing functions required
+PC.py contains the class for the program counter and all the program counter operations required
 opcodes.py contains all the dictionaries for opcodes and registers and their binary address equivalents
-Python programme that contains basic decimal-binary conversion functions which are used at many instances in the simulator:- CONVERTME.py
+Python program that contains basic decimal-binary conversion functions which are used in many instances in the simulator:- CONVERTME.py
 
 # Assembly Language Compiler
 
-This repository contains a simple assembly language compiler that translates assembly code into binary machine code. The compiler supports various instructions and handles labels, variables, and immediate values.
+This repository contains a simple assembly language compiler that translates assembly code into binary machine code. The compiler supports instructions and handles labels, variables, and immediate values.
 
 ## Assumptions
 
